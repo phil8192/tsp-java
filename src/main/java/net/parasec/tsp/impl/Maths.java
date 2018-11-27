@@ -5,11 +5,11 @@ package net.parasec.tsp.impl;
  */
 public final class Maths {
 
-    static {
-        System.loadLibrary("maths");
-    }
+    //static {
+    //    System.loadLibrary("maths");
+    //}
     
-    private static native double sqrtnat(double d);
+    //private static native double sqrtnat(double d);
 
     /**
      * fast inverse square root.
