@@ -2,11 +2,13 @@ package net.parasec.tsp.impl;
 
 public final class Point {
 
+    private int id;
     private final double x;
     private final double y;
     private boolean active = true;
 
-    public Point(final double x, final double y) {
+    public Point(final int id, final double x, final double y) {
+        this.id = id;
         this.x = x;
         this.y = y;
     }
@@ -50,6 +52,6 @@ public final class Point {
     }
 
     public String toString() {
-        return x + " " + y;
+        return id + " " + x + " " + y;
     }
 }

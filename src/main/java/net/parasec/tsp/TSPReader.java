@@ -38,6 +38,7 @@ public final class TSPReader {
 		final ArrayList<Point> points = new ArrayList<Point>();
 		final Pattern pat = Pattern.compile(REGX);
 		scanner = new Scanner(charBuffer).useDelimiter(NL);
+                int id = 0;
 		while(scanner.hasNext()) {
 		    final String line = scanner.next();
 		    final Matcher m = pat.matcher(line);
@@ -45,7 +46,8 @@ public final class TSPReader {
 			final MatchResult mr = m.toMatchResult();
 			final double x = Double.parseDouble(mr.group(2));
 			final double y = Double.parseDouble(mr.group(3));
-			points.add(new Point(x, y));
+			points.add(new Point(id, x, y));
+			id++;
 		    }
 		}
 		return points.toArray(new Point[]{}); 

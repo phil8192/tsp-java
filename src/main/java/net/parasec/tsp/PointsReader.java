@@ -35,11 +35,14 @@ public final class PointsReader {
 		final CharBuffer charBuffer = decoder.decode(byteBuffer);
 		final ArrayList<Point> points = new ArrayList<Point>();
 		scanner = new Scanner(charBuffer).useDelimiter(NL);
+                int id = 0;
 		while(scanner.hasNext()) {
 		    final String line = scanner.next();
 		    final String[] sline = line.split("\\s");
-		    points.add(new Point(Double.parseDouble(sline[0]),
+		    points.add(new Point(id,
+					 Double.parseDouble(sline[0]),
 				         Double.parseDouble(sline[1])));
+		    id++;
 		}
 		return points.toArray(new Point[]{}); 
 	    } finally {
