@@ -3,7 +3,7 @@ package net.parasec.tsp.impl;
 // Fast Local Search, 2-Opt "Dont look bits"
 public final class FLS {
 
-  private final java.util.Random prng = new java.util.Random();
+  private final java.util.SplittableRandom prng = new java.util.SplittableRandom();
 
     /**
      * 2-Opt a tour.
