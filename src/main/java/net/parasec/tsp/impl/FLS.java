@@ -1,7 +1,7 @@
 package net.parasec.tsp.impl;
 
 // Fast Local Search, 2-Opt "Dont look bits"
-public final class FLS {
+public final class FLS implements TSP {
 
   private final java.util.SplittableRandom prng = new java.util.SplittableRandom();
 
