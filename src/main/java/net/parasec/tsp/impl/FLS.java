@@ -162,9 +162,21 @@ public final class FLS {
      * return a 2-Optimal tour.
      */
     public double optimise(final Point[] points) {
-
+/*
+      boolean any = false;
+      for(int i = 0; i < points.length; i++) {
+        if(points[i].isActive()) {
+          System.out.println("init active " + i);
+          any = true;
+        }
+      }
+*/
 	// total tour distance
         double best = Point.distance(points);
+  //      if(!any) {
+  //        return best;
+  //      }
+
 
 	//System.out.printf("tour length = %.4f\n", best);
 
@@ -182,7 +194,7 @@ public final class FLS {
         while(visited < numCities) {
             final Point currentPoint = points[current];
             if(currentPoint.isActive()) {
-
+    //            System.out.println("active = " + current);
 	        // from the current city, try to find a move.
 		final double modified = findMove(current, currentPoint,
 		        points, numCities);
@@ -193,9 +205,14 @@ public final class FLS {
                     current = wrap(current-1, numCities);
                     visited = 0;
                     best += modified;
+                    //System.out.println("move found: " + best);
                     continue;
                 }
-                currentPoint.setActive(false);
+                  //System.out.println("no move");
+                  currentPoint.setActive(false);
+
+            } else {
+              //System.out.println("inactive " + current);
             }
 
 	    // if city is inactive or no moves found, go to next city.

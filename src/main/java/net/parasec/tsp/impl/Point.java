@@ -66,7 +66,7 @@ public final class Point {
 
     public static Point copy(final Point point) {
       final Point _point = new Point(point.getId(), point.getX(), point.getY());
-      _point.setActive(point.isActive());
+      //_point.setActive(point.isActive());
       return _point;
     }
 
