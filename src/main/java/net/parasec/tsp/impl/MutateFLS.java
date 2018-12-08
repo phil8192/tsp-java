@@ -1,7 +1,8 @@
 package net.parasec.tsp.impl;
 
-public class MutateFLS implements TSP {
+import net.parasec.tsp.TSP;
 
+public class MutateFLS implements TSP {
   public double optimise(Point[] points) {
     java.util.SplittableRandom prng = new java.util.SplittableRandom();
     FLS fls = new FLS();

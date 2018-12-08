@@ -1,5 +1,7 @@
 package net.parasec.tsp.impl;
 
+import net.parasec.tsp.TSP;
+
 // Fast Local Search, 2-Opt "Dont look bits"
 public final class FLS implements TSP {
 
