@@ -10,7 +10,7 @@ public class GLS implements TSP {
     final double l = 0.3;
     final int penaltyClear = 100000; // original implementation resets penalty matrix every millionoth iteration.
 
-    PenaltyMatrix penalties = new PenaltyMatrix(points.length);
+    PenaltyMatrix penalties = new ArrayPenaltyMatrix(points.length);
     GLSMoveCost gmc = new GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
     double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
