@@ -5,12 +5,6 @@ package net.parasec.tsp.impl;
  */
 public final class Maths {
 
-    //static {
-    //    System.loadLibrary("maths");
-    //}
-    
-    //private static native double sqrtnat(double d);
-
     /**
      * fast inverse square root.
      * originally from quake 3:
@@ -26,11 +20,11 @@ public final class Maths {
         x = Double.longBitsToDouble(i);
         x *= (1.5d - xhalf*x*x); // pass 1
         x *= (1.5d - xhalf*x*x); // pass 2
-        x *= (1.5d - xhalf*x*x); // pass 3               
+        x *= (1.5d - xhalf*x*x); // pass 3
         x *= (1.5d - xhalf*x*x); // pass 4
         return x;
     }
-    
+
     public static final double sqrt(final double d) {
         //return Math.sqrt(d);
         //return sqrtnat(d); // no diff (jni overhead.)

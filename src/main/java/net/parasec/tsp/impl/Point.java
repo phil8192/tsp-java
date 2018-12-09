@@ -42,7 +42,7 @@ public final class Point {
      * Euclidean distance.
      */
     public final double distance(final Point to) {
-        return Math.sqrt(_distance(to));
+        return Maths.sqrt(_distance(to));
     }
 
     /**
