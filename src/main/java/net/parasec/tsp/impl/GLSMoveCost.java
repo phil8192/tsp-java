@@ -3,19 +3,19 @@ package net.parasec.tsp.impl;
 public class GLSMoveCost implements TwoOptMoveCost {
 
   private final int[] penalties;
-  private double lamda;
+  private int lamda;
 
 
-  public GLSMoveCost(final int[] penalties, double lamda) {
+  public GLSMoveCost(final int[] penalties, int lamda) {
     this.penalties = penalties;
     this.lamda = lamda;
   }
 
-  public double getLamda() {
+  public int getLamda() {
     return lamda;
   }
 
-  public void setLamda(double lamda) {
+  public void setLamda(int lamda) {
     this.lamda = lamda;
   }
 

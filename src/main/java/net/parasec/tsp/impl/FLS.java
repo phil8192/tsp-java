@@ -140,22 +140,7 @@ public final class FLS implements TSP {
      * optimise a tour.
      * return a 2-Optimal tour.
      */
-    public double optimise(final Point[] points) {
-/*
-      boolean any = false;
-      for(int i = 0; i < points.length; i++) {
-        if(points[i].isActive()) {
-          System.out.println("init active " + i);
-          any = true;
-        }
-      }
-*/
-	// total tour distance
-        double best = Point.distance(points);
-  //      if(!any) {
-  //        return best;
-  //      }
-
+    public double optimise(final Point[] points, double score) {
 
 	//System.out.printf("tour length = %.4f\n", best);
 
@@ -183,7 +168,7 @@ public final class FLS implements TSP {
                 if(modified < 0) {
                     current = wrap(current-1, numCities);
                     visited = 0;
-                    best += modified;
+                    score += modified;
                     //System.out.println("move found: " + best);
                     continue;
                 }
@@ -198,7 +183,7 @@ public final class FLS implements TSP {
             current = wrap(current+1, numCities);
             visited++;
         }
-        return best;
+        return score;
     }
 
 }

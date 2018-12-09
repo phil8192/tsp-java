@@ -6,36 +6,37 @@ import java.util.ArrayList;
 
 public class GLS implements TSP {
 
-  public double optimise(Point[] points) {
+  public double optimise(Point[] points, double score) {
     int[] penalties = new int[points.length * points.length];
-    FLS fls = new FLS();
-    Point[] bestPoints = points;
-    double bestScore = fls.optimise(points);
+    GLSMoveCost gmc = new GLSMoveCost(penalties, 0);
+    FLS fls = new FLS(gmc);
+    double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
+    double augmentedScore = bestScore;
+    Point[] bestPoints = Point.copy(points);
+    final double l = 0.3;
+    gmc.setLamda(((int) Math.round(l * (bestScore/points.length))));
     System.out.printf("score = %.4f\n", bestScore);
+
     for(int i = 0; i < 10; i++) {
-      Point[] pointsCopy = Point.copy(bestPoints);
 
-      penalise(pointsCopy, penalties, bestScore, 0.3);
+      penalise(points, penalties);
+      augmentedScore = fls.optimise(points, augmentedScore);
+      score = Point.distance(points);
 
-      double t = System.currentTimeMillis();
-      double minimaScore = fls.optimise(pointsCopy);
-      //System.out.println("fls time = " + (System.currentTimeMillis() - t) + "ms.");
-
-      if(minimaScore < bestScore) {
-        bestPoints = pointsCopy;
-        bestScore = minimaScore;
+      if(score < bestScore) { // non-augmented score.
+        bestPoints = Point.copy(points);
+        bestScore = score;
+        gmc.setLamda(((int) Math.round(l * (bestScore/points.length))));
         System.out.printf("best = %.4f (%d)\n", bestScore, i);
       }
     }
     for(int i = 0; i < points.length; i++) {
       points[i] = bestPoints[i];
     }
-    return 0.0;
+    return bestScore;
   }
 
-  private void penalise(Point[] points, int[] penalties,
-                        double bestScore, double l) {
-    int lambda = (int) Math.round(l * (bestScore/points.length));
+  private void penalise(Point[] points, int[] penalties) {
     ArrayList<Point> maxUtilFeatures = new ArrayList<Point>();
     // get features (edges) which maximise the utility cost/(penalty+1).
     double maxUtil = 0;
