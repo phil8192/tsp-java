@@ -20,10 +20,8 @@ public class BasicTwoOptMoveCost implements TwoOptMoveCost {
   */
   public double moveCost(Point a, Point b, Point c, Point d) {
 
-    // original edges (ab) (cd)
+    // original edges (ab) (cd), candidate edges (ac) (bd)
     double _ab = a._distance(b), _cd = c._distance(d);
-
-    // candidate edges (ac) (bd)
     double _ac = a._distance(c), _bd = b._distance(d);
 
     // triangle of inequality: at least 1 edge will be shorter.
