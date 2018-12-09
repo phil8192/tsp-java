@@ -7,16 +7,24 @@ import java.util.ArrayList;
 public class GLS implements TSP {
 
   public double optimise(Point[] points, double score) {
+    final double l = 0.3;
+    final int penaltyClear = 100000; // original implementation resets penalty matrix every millionoth iteration.
+
     PenaltyMatrix penalties = new PenaltyMatrix(points.length);
     GLSMoveCost gmc = new GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
     double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
     double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
-    final double l = 0.3;
+
     gmc.setLamda(((int) Math.round(l * (bestScore/points.length))));
 
-    for(int i = 0; i < 1000000; i++) {
+    for(int i = 0; i < 2000000; i++) {
+
+      if(i % penaltyClear == 0) {
+        penalties.clear();
+      }
+
       penalise(points, penalties);
       augScore = getAugmentedScore(points, penalties, gmc.getLamda());
       augScore = fls.optimise(points, augScore);
