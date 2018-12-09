@@ -40,7 +40,7 @@ public class GLS implements TSP {
     ArrayList<Point> maxUtilFeatures = new ArrayList<Point>();
     // get features (edges) which maximise the utility cost/(penalty+1).
     double maxUtil = 0;
-    for(int i = 0, j = 1; i < points.length; i++, j = j+1 % points.length) {
+    for(int i = 0, j = 1; i < points.length; i++, j = (j+1) % points.length) {
       Point from = points[i], to = points[j];
       double distance = from.distance(to);
       int penalty = penalties[from.getId()*points.length + to.getId()];

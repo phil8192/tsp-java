@@ -16,7 +16,8 @@ public class TSPSolver {
     } else if(solver.equals("gls_fls")) {
       tspSolver = new GLS();
     } else {
-      throw new UnsupportedOperationException(solver + " not recognised.");
+      String m = solver + " not recognised. try: <fls, mutate_fls, gls_fls>";
+      throw new UnsupportedOperationException(m);
     }
     return tspSolver;
   }
