@@ -7,21 +7,22 @@ import java.util.ArrayList;
 public class GLS implements TSP {
 
   public double optimise(Point[] points, double score) {
-    int[] penalties = new int[points.length * points.length];
-    GLSMoveCost gmc = new GLSMoveCost(penalties, 0);
+    PenaltyMatrix penalties = new PenaltyMatrix(points.length);
+    GLSMoveCost gmc = new GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
     double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
-    double augmentedScore = bestScore;
+    double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
     final double l = 0.3;
     gmc.setLamda(((int) Math.round(l * (bestScore/points.length))));
-    System.out.printf("score = %.4f\n", bestScore);
 
-    for(int i = 0; i < 10; i++) {
-
+    for(int i = 0; i < 1000000; i++) {
       penalise(points, penalties);
-      augmentedScore = fls.optimise(points, augmentedScore);
+      augScore = getAugmentedScore(points, penalties, gmc.getLamda());
+      augScore = fls.optimise(points, augScore);
       score = Point.distance(points);
+
+      //System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
 
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
@@ -36,14 +37,14 @@ public class GLS implements TSP {
     return bestScore;
   }
 
-  private void penalise(Point[] points, int[] penalties) {
+  private void penalise(Point[] points, PenaltyMatrix penalties) {
     ArrayList<Point> maxUtilFeatures = new ArrayList<Point>();
     // get features (edges) which maximise the utility cost/(penalty+1).
     double maxUtil = 0;
     for(int i = 0, j = 1; i < points.length; i++, j = (j+1) % points.length) {
       Point from = points[i], to = points[j];
       double distance = from.distance(to);
-      int penalty = penalties[from.getId()*points.length + to.getId()];
+      int penalty = penalties.getPenalty(from.getId(), to.getId());
       double utility = distance/penalty;
       if(utility > maxUtil) {
         maxUtilFeatures.clear();
@@ -58,10 +59,20 @@ public class GLS implements TSP {
     // increase penalty for features which maximise the utility.
     for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) {
       Point from = maxUtilFeatures.get(i), to = maxUtilFeatures.get(i+1);
-      penalties[from.getId()*points.length + to.getId()]++;
-      penalties[to.getId()*points.length + from.getId()]++;
+      penalties.incPenalty(from.getId(), to.getId());
+      penalties.incPenalty(to.getId(), from.getId()); // ?
       from.setActive(true);
       to.setActive(true);
     }
+  }
+
+  private double getAugmentedScore(Point[] points, PenaltyMatrix penalties, int lamda) {
+    double d = points[points.length-1].distance(points[0]);
+    d += penalties.getPenalty(points[points.length-1].getId(), points[0].getId());
+    for(int i = 1; i < points.length; i++) {
+      d += points[i-1].distance(points[i]);
+      d += lamda * penalties.getPenalty(points[i-1].getId(), points[i].getId());
+    }
+    return d;
   }
 }

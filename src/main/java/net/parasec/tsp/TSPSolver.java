@@ -19,6 +19,7 @@ public class TSPSolver {
       String m = solver + " not recognised. try: <fls, mutate_fls, gls_fls>";
       throw new UnsupportedOperationException(m);
     }
+    System.out.println("using " + solver + " optimiser.");
     return tspSolver;
   }
 }
