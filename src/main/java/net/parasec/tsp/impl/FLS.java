@@ -6,6 +6,17 @@ import net.parasec.tsp.TSP;
 public final class FLS implements TSP {
 
   private final java.util.SplittableRandom prng = new java.util.SplittableRandom();
+  private final TwoOptMoveCost twoOptMoveCost;
+
+
+  public FLS() {
+    this(new BasicTwoOptMoveCost());
+  }
+
+  public FLS(TwoOptMoveCost twoOptMoveCost) {
+    this.twoOptMoveCost = twoOptMoveCost;
+  }
+
 
     /**
      * 2-Opt a tour.
@@ -44,42 +55,6 @@ public final class FLS implements TSP {
     }
 
     /**
-     * cost of a 2-Opt.
-     * cost of replacing existing edges (ab), (cd) with new edges (ac) (bd).
-     * returns the delta of a 2-Opt move. a negative delta indicates that
-     * performing this 2-Opt will result in a shorter tour, and a positive delta
-     * indicates that this 2-Opt will result in a longer tour.
-     *
-     * this function is the main hotspot in the optimisation. it is not feasible
-     * to pre-compute a matrix (a lookup table) for a tour with N cities, since
-     * this will be O(N^2) and the most compact representation will be (N^2-N)/2.
-     *
-     * good optimisation: most of the time the algorithm is evaluating bad moves,
-     * in the obvious case where 2 edge exchanges would result in 2 longer
-     * edges, avoid 4 square root operations by comparing squares. this results
-     * in a 40% speed up in this code.
-     */
-    private double moveCost(final Point a, final Point b,
-                            final Point c, final Point d) {
-
-	// original edges (ab) (cd)
-	final double _ab = a._distance(b), _cd = c._distance(d);
-
-	// candidate edges (ac) (bd)
-	final double _ac = a._distance(c), _bd = b._distance(d);
-
-	// triangle of inequality: at least 1 edge will be shorter.
-	// if both will be longer, there will be no improvement.
-	// return a positive delta to indicate no improvement.
-	if(_ab < _ac && _cd < _bd)
-	    return 1;
-
-	// otherwise must calculate distance delta.
-	return (Maths.sqrt(_ac) + Maths.sqrt(_bd)) -
-	       (Maths.sqrt(_ab) + Maths.sqrt(_cd));
-    }
-
-    /**
      * set active bits for 4 vertices making up edges ab, cd.
      */
     private void activate(final Point a, final Point b,
@@ -108,7 +83,9 @@ public final class FLS implements TSP {
      * until an improvement is found.
      */
     private double findMove(final int current, final Point currentPoint,
-			    final Point[] points, final int numCities) {
+			                      final Point[] points, final int numCities) {
+
+      final TwoOptMoveCost twoOptMoveCost = this.twoOptMoveCost;
 
 	// previous and next city index and point object.
 	final int prev = wrap(current-1, numCities);
@@ -134,7 +111,7 @@ public final class FLS implements TSP {
 	    // will result in an improvement. if so, set active bits for
 	    // the 4 vertices involved and reverse everything between:
 	    // (currentPoint, c).
-            final double delta1 = moveCost(prevPoint, currentPoint, c, d);
+            final double delta1 = twoOptMoveCost.moveCost(prevPoint, currentPoint, c, d);
             if(delta1 < 0) {
                 activate(prevPoint, currentPoint, c, d);
                 reverse(points, Math.min(prev, i)+1, Math.max(prev, i));
@@ -148,7 +125,7 @@ public final class FLS implements TSP {
 	    // will result in an improvement. if so, set active bits for
 	    // the 4 vertices involved and reverse everything between:
 	    // (nextPoint, c).
-            final double delta2 = moveCost(currentPoint, nextPoint, c, d);
+            final double delta2 = twoOptMoveCost.moveCost(currentPoint, nextPoint, c, d);
             if(delta2 < 0) {
                 activate(currentPoint, nextPoint, c, d);
                 reverse(points, Math.min(current, i)+1, Math.max(current, i));
