@@ -21,7 +21,7 @@ public class BFPM implements PenaltyMatrix {
     this.numCities = numCities;
     this.raf = new RandomAccessFile("/mnt/raid/phil/bfm.matrix", "rw");
     try {
-      long size = 4L * numCities*(numCities-1) / 2; // triangle - diag.
+      long size = 2L * numCities*(numCities-1) / 2; // triangle - diag.
       for (long offset = 0; offset < size; offset += MAPPING_SIZE) {
         long size2 = Math.min(size - offset, MAPPING_SIZE);
         mappings.add(raf.getChannel()
@@ -41,18 +41,17 @@ public class BFPM implements PenaltyMatrix {
   }
 
   public int getPenalty(int i, int j) {
-    long p = position(i, j) * 4L;
+    long p = position(i, j) * 2L;
     int mapN = (int) (p / MAPPING_SIZE);
     int offN = (int) (p % MAPPING_SIZE);
-    if(mapN < 0 || offN < 0) System.out.println("i=" + i + " j=" + j + " p=" + p + " mapN=" + mapN + " offN=" + offN);
-    return mappings.get(mapN).getInt(offN);
+    return mappings.get(mapN).getShort(offN);
   }
 
   public void incPenalty(int i, int j) {
-    long p = position(i, j) * 4L;
+    long p = position(i, j) * 2L;
     int mapN = (int) (p / MAPPING_SIZE);
     int offN = (int) (p % MAPPING_SIZE);
-    mappings.get(mapN).putInt(offN, mappings.get(mapN).getInt(offN)+1);
+    mappings.get(mapN).putShort(offN, (short) (mappings.get(mapN).getShort(offN) + 1));
   }
 
   public void clear() {

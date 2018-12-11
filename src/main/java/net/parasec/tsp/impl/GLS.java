@@ -16,7 +16,7 @@ public class GLS implements TSP {
     try{penalties = new BFPM(points.length);}catch(IOException e){e.printStackTrace();}
     GLSMoveCost gmc = new GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
-    //System.out.println("start opt 1");
+    System.out.println("start opt 1");
     double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
     double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
@@ -32,11 +32,11 @@ public class GLS implements TSP {
 
       penalise(points, penalties);
       augScore = getAugmentedScore(points, penalties, gmc.getLamda());
-      //System.out.println("start opt " + i);
+      System.out.println("start opt " + i);
       augScore = fls.optimise(points, augScore);
       score = Point.distance(points);
 
-      //System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
+      System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
 
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
