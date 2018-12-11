@@ -16,7 +16,7 @@ public class GLS implements TSP {
     try{penalties = new BFPM(points.length);}catch(IOException e){e.printStackTrace();}
     GLSMoveCost gmc = new GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
-    System.out.println("start opt 1");
+    //System.out.println("start opt 1");
     double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
     double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
@@ -24,7 +24,7 @@ public class GLS implements TSP {
     gmc.setLamda(((int) Math.round(l * (bestScore/points.length))));
 
     //for(int i = 0; i < 2000000; i++) {
-    for(int i = 0; i < 1000; i++) {
+    for(int i = 0; i < 1000000; i++) {
 
       if(i % penaltyClear == 0) {
         penalties.clear();
@@ -32,11 +32,11 @@ public class GLS implements TSP {
 
       penalise(points, penalties);
       augScore = getAugmentedScore(points, penalties, gmc.getLamda());
-      System.out.println("start opt " + i);
+      //System.out.println("start opt " + i);
       augScore = fls.optimise(points, augScore);
       score = Point.distance(points);
 
-      System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
+      //System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
 
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
@@ -71,7 +71,7 @@ public class GLS implements TSP {
       }
     }
     // increase penalty for features which maximise the utility.
-    System.out.println("penalise " + maxUtilFeatures.size() + " features");
+    //System.out.println("penalise " + maxUtilFeatures.size() + " features");
     for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) {
       Point from = maxUtilFeatures.get(i), to = maxUtilFeatures.get(i+1);
       penalties.incPenalty(from.getId(), to.getId());
