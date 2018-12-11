@@ -19,7 +19,7 @@ public class BFPM implements PenaltyMatrix {
 
   public BFPM(int numCities) throws IOException {
     this.numCities = numCities;
-    this.raf = new RandomAccessFile("/mnt/raid/phil/bfm.matrix", "rw");
+    this.raf = new RandomAccessFile("/home/phil/tsp-java-gls/bfm.matrix", "rw");
     try {
       long size = 2L * numCities*(numCities-1) / 2; // triangle - diag.
       for (long offset = 0; offset < size; offset += MAPPING_SIZE) {

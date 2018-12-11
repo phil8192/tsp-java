@@ -59,7 +59,7 @@ public class GLS implements TSP {
       Point from = points[i], to = points[j];
       double distance = from.distance(to);
       int penalty = penalties.getPenalty(from.getId(), to.getId());
-      double utility = distance/penalty;
+      double utility = distance/(penalty+1);
       if(utility > maxUtil) {
         maxUtilFeatures.clear();
         maxUtilFeatures.add(from);
@@ -71,11 +71,11 @@ public class GLS implements TSP {
       }
     }
     // increase penalty for features which maximise the utility.
-    //System.out.println("penalise " + maxUtilFeatures.size() + " features");
+    System.out.println("penalise " + maxUtilFeatures.size() + " features");
     for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) {
       Point from = maxUtilFeatures.get(i), to = maxUtilFeatures.get(i+1);
       penalties.incPenalty(from.getId(), to.getId());
-      penalties.incPenalty(to.getId(), from.getId()); // ?
+      //penalties.incPenalty(to.getId(), from.getId()); // ?
       from.setActive(true);
       to.setActive(true);
     }
