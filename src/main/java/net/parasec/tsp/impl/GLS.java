@@ -8,7 +8,7 @@ import java.io.IOException;
 public class GLS implements TSP {
 
   public double optimise(Point[] points, double score) {
-    final double l = 0.3;
+    final double a = 0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
     final int penaltyClear = 10000000; // original implementation resets penalty matrix every millionoth iteration.
 
     //PenaltyMatrix penalties = new ArrayPenaltyMatrix(points.length);
@@ -21,7 +21,10 @@ public class GLS implements TSP {
     double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
 
-    gmc.setLamda(((int) Math.round(l * (bestScore/points.length))));
+    // "cost of a local minimum tour produced by local search
+    // (e.g. first local minimum before penalties are applied)"
+    // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf
+    gmc.setLamda(((int) Math.round(a * (bestScore/points.length))));
 
     //for(int i = 0; i < 2000000; i++) {
     for(int i = 0; i < 1000000; i++) {
@@ -41,7 +44,6 @@ public class GLS implements TSP {
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
         bestScore = score;
-        gmc.setLamda(((int) Math.round(l * (bestScore/points.length))));
         System.out.printf("best = %.4f (%d)\n", bestScore, i);
       }
     }
@@ -71,17 +73,18 @@ public class GLS implements TSP {
       }
     }
     // increase penalty for features which maximise the utility.
-    System.out.println("penalise " + maxUtilFeatures.size() + " features");
-    for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) {
+    System.out.println("penalise " + maxUtilFeatures.size()/2 + " features");
+    for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) { // note/todo: how often is there actually > 1 feature? probably no harm doing one at a time (others will be candidates later.)
       Point from = maxUtilFeatures.get(i), to = maxUtilFeatures.get(i+1);
       penalties.incPenalty(from.getId(), to.getId());
+      System.out.println("(" + from.getId() + "," + to.getId() + ") = " + penalties.getPenalty(from.getId(), to.getId()));
       //penalties.incPenalty(to.getId(), from.getId()); // ?
       from.setActive(true);
       to.setActive(true);
     }
   }
 
-  private double getAugmentedScore(Point[] points, PenaltyMatrix penalties, int lamda) {
+  private double getAugmentedScore(Point[] points, PenaltyMatrix penalties, double lamda) {
     double d = points[points.length-1].distance(points[0]);
     d += penalties.getPenalty(points[points.length-1].getId(), points[0].getId());
     for(int i = 1; i < points.length; i++) {
