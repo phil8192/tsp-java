@@ -26,15 +26,22 @@ public class GLS implements TSP {
     //    0.2: best = 8879.8965 (203609) (68.47s) (penalties = 73010 max_penalty = 10)
     //    0.3: best = 8892.9067 (151628) (54.70s) (penalties = 75256 max_penalty = 7)
     //      1: best = 9154.7613 (109239) (53.25s) (penalties = 98417 max_penalty = 3)
-    final double a = 0.005; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
+
+    // lru+mmf (not worth it..)
+    // best = 8847.2004 (175895) (179.35s) (penalties = 31311 max_penalty = 21)
+    // just mmf
+    // best = 8845.8809 (175955) (84.06s) (penalties = 31312 max_penalty = 21)
+
+    // best = 8845.8809 (175955) (183.47s) (penalties = 31312 max_penalty = 21)
+    final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
 
     final int penaltyClear = 10000000; // original implementation resets penalty matrix every millionoth iteration.
 
     PenaltyMatrix penalties=null;
     // 175955 = 55.61s
-    penalties = new ArrayPenaltyMatrix(points.length);
+    //penalties = new ArrayPenaltyMatrix(points.length);
     // 175955 = 89.43s
-    //try{penalties = new BFPM(points.length);}catch(IOException e){e.printStackTrace();}
+    try{penalties = new BFPM(points.length);}catch(IOException e){e.printStackTrace();}
     GLSMoveCost gmc = new GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
     System.out.println("start opt 1");
@@ -49,7 +56,7 @@ public class GLS implements TSP {
 
     double l = System.currentTimeMillis();
     //for(int i = 0; i < 2000000; i++) {
-    for(int i = 0; i < 1000000; i++) {
+    for(int i = 0; i < 10000000; i++) {
 
       if(i % penaltyClear == 0) {
         penalties.clear();
