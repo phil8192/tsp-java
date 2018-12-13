@@ -19,7 +19,7 @@ public class BFPM implements PenaltyMatrix {
 
   public BFPM(int numCities) throws IOException {
     this.numCities = numCities;
-    this.raf = new RandomAccessFile("/home/phil/tsp-java-gls/bfm.matrix", "rw");
+    this.raf = new RandomAccessFile("/mnt/nvme/phil/bfm.matrix", "rw");
     try {
       long size = 2L * numCities*(numCities-1) / 2; // triangle - diag.
       for (long offset = 0; offset < size; offset += MAPPING_SIZE) {
@@ -47,11 +47,13 @@ public class BFPM implements PenaltyMatrix {
     return mappings.get(mapN).getShort(offN);
   }
 
-  public void incPenalty(int i, int j) {
+  public int incPenalty(int i, int j) {
     long p = position(i, j) * 2L;
     int mapN = (int) (p / MAPPING_SIZE);
     int offN = (int) (p % MAPPING_SIZE);
-    mappings.get(mapN).putShort(offN, (short) (mappings.get(mapN).getShort(offN) + 1));
+    short penalty = (short) (mappings.get(mapN).getShort(offN) + 1);
+    mappings.get(mapN).putShort(offN, penalty);
+    return penalty;
   }
 
   public void clear() {

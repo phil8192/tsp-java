@@ -6,16 +6,27 @@ public class ArrayPenaltyMatrix implements PenaltyMatrix {
   private final int numCities;
 
   public ArrayPenaltyMatrix(int numCities) {
-    this.penalties = new int[numCities*numCities];
+    //this.penalties = new int[numCities*numCities];
+    this.penalties = new int[numCities*(numCities-1) / 2];
     this.numCities = numCities;
   }
 
-  public int getPenalty(int i, int j) {
-    return penalties[i*numCities + j];
+  private int position(int x, int y) {
+    int i = Math.min(x, y), j = Math.max(x, y);
+    int n = i+1;
+    int offset = i*numCities + j;
+    return offset - n*(n+1)/2; // rm diag + triangle.
   }
 
-  public void incPenalty(int i, int j) {
-    penalties[i*numCities + j]++;
+  public int getPenalty(int i, int j) {
+    return penalties[position(i, j)];
+  }
+
+  public int incPenalty(int i, int j) {
+    int pos = position(i, j);
+    int penalty = penalties[pos] + 1;
+    penalties[pos] = penalty;
+    return penalty;
   }
 
   public void clear() {

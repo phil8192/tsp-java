@@ -7,13 +7,34 @@ import java.io.IOException;
 
 public class GLS implements TSP {
 
+  private int maxPenalty = 0 ;
+  private int numPenalties = 0;
+
+
   public double optimise(Point[] points, double score) {
-    final double a = 0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
+
+    // rat783
+    // 0.0001: best = 9278.5988 (247180) (60.03s) (penalties = 1641 max_penalty = 842)
+    //  0.001: best = 8921.7626 (259567) (60.28s) (penalties = 4784 max_penalty = 224)
+    //   0.01: best = 8855.4163 (204174) (57.67s) (penalties = 14106 max_penalty = 54)
+    //  0.025: best = 8846.6683 (191518) (57.26s) (penalties = 22467 max_penalty = 32)
+    //   0.03: best = 8852.2957 (223703) (67.69s) (penalties = 27302 max_penalty = 31)
+    //   0.04: best = 8847.0568 (206710) (64.62s) (penalties = 30691 max_penalty = 26)
+    //   0.05: best = 8845.8809 (175955) (55.61s) (penalties = 31312 max_penalty = 21)
+    //  0.075: best = 8849.9977 (291332) (93.81s) (penalties = 53570 max_penalty = 20
+    //    0.1: best = 8851.3869 (164248) (53.79s) (penalties = 44185 max_penalty = 13)
+    //    0.2: best = 8879.8965 (203609) (68.47s) (penalties = 73010 max_penalty = 10)
+    //    0.3: best = 8892.9067 (151628) (54.70s) (penalties = 75256 max_penalty = 7)
+    //      1: best = 9154.7613 (109239) (53.25s) (penalties = 98417 max_penalty = 3)
+    final double a = 0.005; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
+
     final int penaltyClear = 10000000; // original implementation resets penalty matrix every millionoth iteration.
 
-    //PenaltyMatrix penalties = new ArrayPenaltyMatrix(points.length);
     PenaltyMatrix penalties=null;
-    try{penalties = new BFPM(points.length);}catch(IOException e){e.printStackTrace();}
+    // 175955 = 55.61s
+    penalties = new ArrayPenaltyMatrix(points.length);
+    // 175955 = 89.43s
+    //try{penalties = new BFPM(points.length);}catch(IOException e){e.printStackTrace();}
     GLSMoveCost gmc = new GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
     System.out.println("start opt 1");
@@ -24,8 +45,9 @@ public class GLS implements TSP {
     // "cost of a local minimum tour produced by local search
     // (e.g. first local minimum before penalties are applied)"
     // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf
-    gmc.setLamda(((int) Math.round(a * (bestScore/points.length))));
+    gmc.setLamda(a * (bestScore/points.length));
 
+    double l = System.currentTimeMillis();
     //for(int i = 0; i < 2000000; i++) {
     for(int i = 0; i < 1000000; i++) {
 
@@ -35,16 +57,16 @@ public class GLS implements TSP {
 
       penalise(points, penalties);
       augScore = getAugmentedScore(points, penalties, gmc.getLamda());
-      System.out.println("start opt " + i);
+      //System.out.println("start opt " + i);
       augScore = fls.optimise(points, augScore);
       score = Point.distance(points);
 
-      System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
+      //System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
 
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
         bestScore = score;
-        System.out.printf("best = %.4f (%d)\n", bestScore, i);
+        System.out.printf("best = %.4f (%d) (%.2fs) (penalties = %d max_penalty = %d)\n", bestScore, i, (System.currentTimeMillis()-l)/1000.0, numPenalties, maxPenalty);
       }
     }
     for(int i = 0; i < points.length; i++) {
@@ -73,11 +95,17 @@ public class GLS implements TSP {
       }
     }
     // increase penalty for features which maximise the utility.
-    System.out.println("penalise " + maxUtilFeatures.size()/2 + " features");
+    //System.out.println("penalise " + maxUtilFeatures.size()/2 + " features");
     for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) { // note/todo: how often is there actually > 1 feature? probably no harm doing one at a time (others will be candidates later.)
       Point from = maxUtilFeatures.get(i), to = maxUtilFeatures.get(i+1);
-      penalties.incPenalty(from.getId(), to.getId());
-      System.out.println("(" + from.getId() + "," + to.getId() + ") = " + penalties.getPenalty(from.getId(), to.getId()));
+      int penalty = penalties.incPenalty(from.getId(), to.getId());
+      if(penalty > maxPenalty) {
+        maxPenalty = penalty;
+      }
+      if(penalty == 1) {
+        numPenalties++;
+      }
+      //System.out.println("(" + from.getId() + "," + to.getId() + ") = " + penalties.getPenalty(from.getId(), to.getId()));
       //penalties.incPenalty(to.getId(), from.getId()); // ?
       from.setActive(true);
       to.setActive(true);
