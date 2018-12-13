@@ -9,15 +9,18 @@ public class MutateFLS implements TSP {
     Point[] bestPoints = points;
     double bestScore = fls.optimise(points, score);
     System.out.printf("score = %.4f\n", bestScore);
-    for(int i = 0; i < 25000; i++) {
+    double l = System.currentTimeMillis();
+    for(int i = 0; i < 1000000; i++) {
       Point[] pointsCopy = Point.copy(bestPoints);
       fls.mutate(pointsCopy);
+      double mutantScore = Point.distance(pointsCopy);
       double t = System.currentTimeMillis();
-      double minimaScore = fls.optimise(pointsCopy, bestScore);
+      double minimaScore = fls.optimise(pointsCopy, mutantScore);
+      //System.out.printf("minima = %.4f\n", minimaScore);
       if(minimaScore < bestScore) {
         bestPoints = pointsCopy;
         bestScore = minimaScore;
-        System.out.printf("best = %.4f (%d)\n", bestScore, i);
+        System.out.printf("best = %.4f (%d) (%.2fs)\n", bestScore, i, System.currentTimeMillis()-l);
       }
     }
     for(int i = 0; i < points.length; i++) {

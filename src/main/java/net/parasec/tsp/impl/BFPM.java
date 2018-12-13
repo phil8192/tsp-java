@@ -15,11 +15,11 @@ public class BFPM implements PenaltyMatrix {
   private final RandomAccessFile raf;
   private final List<ByteBuffer> mappings = new ArrayList<>();
   private final long numCities;
-  //private final LRUCache lru;
+  private final LRUCache lru;
 
   public BFPM(int numCities) throws IOException {
     this.numCities = numCities;
-    //this.lru = new LRUCache(numCities*1000);
+    this.lru = new LRUCache(numCities);
     this.raf = new RandomAccessFile("/mnt/nvme/phil/bfm.matrix", "rw");
     try {
       long size = 2L * numCities*(numCities-1) / 2; // triangle - diag.
@@ -43,19 +43,19 @@ public class BFPM implements PenaltyMatrix {
 
   public int getPenalty(final int i, final int j) {
     final long p = position(i, j) * 2L;
-    //Short penalty = lru.get(p);
-    //if(penalty == null) {
-    //  if(lru.size() < lru.getMax()) {
-    //    penalty = 0;
-    //  } else {
+    Short penalty = lru.get(p);
+    if(penalty == null) {
+      if(lru.size() < lru.getMax()) {
+        penalty = 0;
+      } else {
     final int mapN = (int) (p / MAPPING_SIZE);
     final int offN = (int) (p % MAPPING_SIZE);
-    return mappings.get(mapN).getShort(offN);
-    // penalty = mappings.get(mapN).getShort(offN);
-    //lru.put(p, penalty);
-    //  }
-    //}
-    //return penalty;
+    //return mappings.get(mapN).getShort(offN);
+    penalty = mappings.get(mapN).getShort(offN);
+    lru.put(p, penalty);
+      }
+    }
+    return penalty;
   }
 
   public int incPenalty(final int i, int j) {
@@ -64,7 +64,7 @@ public class BFPM implements PenaltyMatrix {
     final int offN = (int) (p % MAPPING_SIZE);
     final ByteBuffer b = mappings.get(mapN);
     short penalty = (short) (b.getShort(offN) + 1);
-    //lru.put(p, penalty);
+    lru.put(p, penalty);
     b.putShort(offN, penalty);
     return penalty;
   }
