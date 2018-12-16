@@ -124,6 +124,7 @@ public class FLS implements TSP {
       double newCost1 = Point.distance(points);
       double delta1 = newCost1 - curCost;
       if(delta1 < 0) {
+        activate(prevPoint, currentPoint, c, d);
         return delta1;
       } else {
         reverse(points, Math.min(prev, i)+1, Math.max(prev, i));
@@ -149,6 +150,7 @@ public class FLS implements TSP {
       final double newCost2 = Point.distance(points);
       final double delta2 = newCost2 - curCost;
       if(delta2 < 0) {
+        activate(currentPoint, nextPoint, c, d);
         return delta2;
       } else {
         reverse(points, Math.min(current, i)+1, Math.max(current, i));
