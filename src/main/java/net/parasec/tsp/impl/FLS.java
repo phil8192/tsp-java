@@ -110,11 +110,23 @@ public class FLS implements TSP {
       // will result in an improvement. if so, set active bits for
       // the 4 vertices involved and reverse everything between:
       // (currentPoint, c).
+
+      /*
       final double delta1 = twoOptMoveCost.moveCost(prevPoint, currentPoint, c, d);
       if(delta1 < 0) {
         activate(prevPoint, currentPoint, c, d);
         reverse(points, Math.min(prev, i)+1, Math.max(prev, i));
         return delta1;
+      }
+      */
+      double curCost = Point.distance(points);
+      reverse(points, Math.min(prev, i)+1, Math.max(prev, i));
+      double newCost1 = Point.distance(points);
+      double delta1 = newCost1 - curCost;
+      if(delta1 < 0) {
+        return delta1;
+      } else {
+        reverse(points, Math.min(prev, i)+1, Math.max(prev, i));
       }
 
       // next edge:
@@ -124,12 +136,24 @@ public class FLS implements TSP {
       // will result in an improvement. if so, set active bits for
       // the 4 vertices involved and reverse everything between:
       // (nextPoint, c).
+
+      /*
       final double delta2 = twoOptMoveCost.moveCost(currentPoint, nextPoint, c, d);
       if(delta2 < 0) {
         activate(currentPoint, nextPoint, c, d);
         reverse(points, Math.min(current, i)+1, Math.max(current, i));
         return delta2;
       }
+      */
+      reverse(points, Math.min(current, i)+1, Math.max(current, i));
+      final double newCost2 = Point.distance(points);
+      final double delta2 = newCost2 - curCost;
+      if(delta2 < 0) {
+        return delta2;
+      } else {
+        reverse(points, Math.min(current, i)+1, Math.max(current, i));
+      }
+
 
     }
     return 0d;
