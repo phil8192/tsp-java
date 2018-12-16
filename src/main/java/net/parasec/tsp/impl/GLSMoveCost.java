@@ -25,7 +25,9 @@ public class GLSMoveCost implements TwoOptMoveCost {
     return penalties.getPenalty(from.getId(), to.getId());
   }
 
-  public double moveCost(Point a, Point b, Point c, Point d) {
+  public double moveCost(Point a, Point b, Point c, Point d,
+                         int a_idx, int b_idx, int c_idx, int d_idx,
+                         Point[] tour) {
 
     // distance delta: original edges (ab) (cd), candidate edges (ac) (bd).
     double d_ab = a.distance(b), d_cd = c.distance(d);

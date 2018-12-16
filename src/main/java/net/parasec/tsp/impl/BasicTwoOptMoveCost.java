@@ -18,7 +18,9 @@ public class BasicTwoOptMoveCost implements TwoOptMoveCost {
   * edges, avoid 4 square root operations by comparing squares. this results
   * in a 40% speed up in this code.
   */
-  public double moveCost(Point a, Point b, Point c, Point d) {
+  public double moveCost(Point a, Point b, Point c, Point d,
+                         int a_idx, int b_idx, int c_idx, int d_idx,
+                         Point[] tour) {
 
     // original edges (ab) (cd), candidate edges (ac) (bd)
     double _ab = a._distance(b), _cd = c._distance(d);
