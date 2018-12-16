@@ -20,7 +20,7 @@ public class MutateFLS implements TSP {
       if(minimaScore < bestScore) {
         bestPoints = pointsCopy;
         bestScore = minimaScore;
-        System.out.printf("best = %.4f (%d) (%.2fs)\n", bestScore, i, System.currentTimeMillis()-l);
+        System.out.printf("best = %.4f (%d) (%.2fs)\n", bestScore, i, (System.currentTimeMillis()-l)/1000.0);
       }
     }
     for(int i = 0; i < points.length; i++) {
