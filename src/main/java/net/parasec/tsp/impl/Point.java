@@ -9,7 +9,6 @@ public final class Point {
   private boolean active = false;
 
   private final boolean prime;
-
   private boolean _isPrime(int n) {
       if(n == 0 || n == 1 || n % 2 == 0) return false;
       if(n == 2) return true;
@@ -18,14 +17,25 @@ public final class Point {
       }
       return true;
   }
+  public boolean isPrime() {
+    return prime;
+  }
 
   public Point(final int id, final double x, final double y) {
     this.id = id;
     this.x = x;
     this.y = y;
-
     this.prime = _isPrime(id);
   }
+
+  // copy con
+  private Point(final int id, final double x, final double y, final boolean prime) {
+    this.id = id;
+    this.x = x;
+    this.y = y;
+    this.prime = prime;
+  }
+
 
   public int getId() {
     return id;
@@ -79,7 +89,7 @@ public final class Point {
   }
 
   public static Point copy(final Point point) {
-    final Point _point = new Point(point.getId(), point.getX(), point.getY());
+    final Point _point = new Point(point.getId(), point.getX(), point.getY(), point.isPrime());
     //_point.setActive(point.isActive());
     return _point;
   }
