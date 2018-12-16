@@ -123,8 +123,12 @@ public class GLS implements TSP {
     double d = points[points.length-1].distance(points[0]);
     d += penalties.getPenalty(points[points.length-1].getId(), points[0].getId());
     for(int i = 1; i < points.length; i++) {
-      d += points[i-1].distance(points[i]);
-      d += lamda * penalties.getPenalty(points[i-1].getId(), points[i].getId());
+      final Point pre = points[i-1], cur = points[i];
+      d += pre.distance(cur);
+      if(i % 10 == 0 && !pre.isPrime()) {
+        distance *= 1.1;
+      }
+      d += lamda * penalties.getPenalty(pre.getId(), cur.getId());
     }
     return d;
   }
