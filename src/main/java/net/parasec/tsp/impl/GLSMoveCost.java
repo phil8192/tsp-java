@@ -2,9 +2,9 @@ package net.parasec.tsp.impl;
 
 public class GLSMoveCost implements TwoOptMoveCost {
 
-  private final PenaltyMatrix penalties;
-  private double lamda;
-  private int numCities;
+  protected final PenaltyMatrix penalties;
+  protected double lamda;
+  protected int numCities;
 
 
   public GLSMoveCost(final PenaltyMatrix penalties, double lamda, int numCities) {
@@ -21,7 +21,7 @@ public class GLSMoveCost implements TwoOptMoveCost {
     this.lamda = lamda;
   }
 
-  private double getPenalty(Point from, Point to) {
+  protected double getPenalty(Point from, Point to) {
     return penalties.getPenalty(from.getId(), to.getId());
   }
 
