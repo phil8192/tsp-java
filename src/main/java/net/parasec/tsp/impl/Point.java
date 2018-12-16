@@ -8,10 +8,23 @@ public final class Point {
   //private boolean active = true;
   private boolean active = false;
 
+  private final boolean prime;
+
+  private boolean _isPrime(int n) {
+      if(n == 0 || n == 1 || n % 2 == 0) return false;
+      if(n == 2) return true;
+      for(int i = 3, lim = ((int) Math.round(Math.sqrt(n))) + 1; i < lim; i += 2) {
+        if(n % i == 0) return false;
+      }
+      return true;
+  }
+
   public Point(final int id, final double x, final double y) {
     this.id = id;
     this.x = x;
     this.y = y;
+
+    this.prime = _isPrime(id);
   }
 
   public int getId() {
