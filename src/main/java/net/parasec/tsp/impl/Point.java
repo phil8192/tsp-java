@@ -57,7 +57,13 @@ public final class Point {
     final int len = points.length;
     double d = points[len-1].distance(points[0]);
     for(int i = 1; i < len; i++) {
-      d += points[i-1].distance(points[i]);
+      //d += points[i-1].distance(points[i]);
+      final Point pre = points[i-1], cur = points[i];
+      double distance = pre.distance(cur);
+      if(i % 10 == 0 && !pre.isPrime()) {
+        distance *= 1.1;
+      }
+      d += distance;
     }
     return d;
   }
