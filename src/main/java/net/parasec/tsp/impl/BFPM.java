@@ -29,7 +29,6 @@ public class BFPM implements PenaltyMatrix {
             .map(FileChannel.MapMode.READ_WRITE, offset, size2));
       }
     } catch (IOException e) {
-      raf.close();
       e.printStackTrace();
     }
   }

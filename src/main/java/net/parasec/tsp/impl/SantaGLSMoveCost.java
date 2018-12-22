@@ -13,36 +13,52 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     // distance delta: original edges (ab) (cd), candidate edges (ac) (bd).
     double d_ab = a.distance(b), d_cd = c.distance(d);
     double d_ac = a.distance(c), d_bd = b.distance(d);
-    double deltaD = (d_ac+d_bd) - (d_ab+d_cd);
+    double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
     // penalty delta
     double p_ab = getPenalty(a, b), p_cd = getPenalty(c, d);
     double p_ac = getPenalty(a, c), p_bd = getPenalty(b, d);
-    double deltaP = lamda * ((p_ac+p_bd) - (p_ab+p_cd));
+    double deltaP = lamda * ((p_ac + p_bd) - (p_ab + p_cd));
 
     // prime delta
     double curPrime = 0, newPrime = 0;
 
     if(b_idx % 10 == 0) {
       if(b.isPrime()) { // ab
-        curPrime += 0.1*d_ab;
+        curPrime += 0.1 * d_ab;
       }
       if(c.isPrime()) { // proposed ac (c will take place of b)
-        newPrime += 0.1*d_ac;
+        newPrime += 0.1 * d_ac;
       }
     }
     if(d_idx % 10 == 0) {
       if(d.isPrime()) { // cd
-        curPrime += 0.1*d_cd;
+        curPrime += 0.1 * d_cd;
       }
       if(b.isPrime()) { // proposed bd (b will take place of c)
-        newPrime += 0.1*d_bd;
+        newPrime += 0.1 * d_bd;
       }
     }
 
+    // need to reverse a segment in 2-opt.
+    // this means a different score for reversed segment: primes will be in different places.
+    // (this makes the problem difficult and hard to optimise)
+    int i = b_idx + (10 - (b_idx % 10)); // start (next 10th from b_idx)
+    while(i <= c_idx) { // up until c (inclusive)
+      Point curPoint = tour[i];
+      if(curPoint.isPrime()) {
+        curPrime += 0.1 * tour[i - 1].distance(curPoint);
+      }
+      int j = c_idx - (i - b_idx);
+      Point proPoint = tour[j];
+      if(proPoint.isPrime()) {
+        newPrime += 0.1 * tour[j + 1].distance(proPoint);
+      }
+      i += 10;
+    }
 
     double deltaPrime = newPrime - curPrime;
 
-    return deltaD+deltaP+deltaPrime;
+    return deltaD + deltaP + deltaPrime;
   }
 }
