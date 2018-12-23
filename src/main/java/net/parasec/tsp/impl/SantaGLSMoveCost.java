@@ -6,6 +6,28 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     super(penalties, lamda, numCities);
   }
 
+  private double reverseDelta(Point[] tour, int from, int to) {
+    // need to reverse a segment in 2-opt.
+    // this means a different score for reversed segment: primes will be in different places.
+    // (this makes the problem difficult and hard to optimise)
+    double curPrime = 0, newPrime = 0;
+    int i = from + (10 - (from % 10)); // start (next 10th from b_idx)
+    int j = to - (i - from); // opposite side
+    while(i <= to) { // up until c (inclusive)
+      Point curPoint = tour[i]; // current city
+      if(curPoint.isPrime()) {
+        curPrime += 0.1 * tour[i - 1].distance(curPoint);
+      }
+      Point revPoint = tour[j]; // city in this place when reversed
+      if(revPoint.isPrime()) {
+        newPrime += 0.1 * tour[j + 1].distance(revPoint); // previous will be next from revPoint.
+      }
+      i += 10;
+      j -= 10;
+    }
+    return curPrime - newPrime;
+  }
+
   public double moveCost(Point a, Point b, Point c, Point d,
                          int a_idx, int b_idx, int c_idx, int d_idx,
                          Point[] tour) {
@@ -40,24 +62,9 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       }
     }
 
-    // need to reverse a segment in 2-opt.
-    // this means a different score for reversed segment: primes will be in different places.
-    // (this makes the problem difficult and hard to optimise)
-    int i = b_idx + (10 - (b_idx % 10)); // start (next 10th from b_idx)
-    while(i <= c_idx) { // up until c (inclusive)
-      Point curPoint = tour[i];
-      if(curPoint.isPrime()) {
-        curPrime += 0.1 * tour[i - 1].distance(curPoint);
-      }
-      int j = c_idx - (i - b_idx);
-      Point proPoint = tour[j];
-      if(proPoint.isPrime()) {
-        newPrime += 0.1 * tour[j + 1].distance(proPoint);
-      }
-      i += 10;
-    }
+    double revPrime = reverseDelta(tour, b_idx, c_idx);
 
-    double deltaPrime = newPrime - curPrime;
+    double deltaPrime = (newPrime - curPrime) + revPrime;
 
     return deltaD + deltaP + deltaPrime;
   }
