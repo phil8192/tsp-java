@@ -88,19 +88,19 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     // prime delta
     double curPrime = 0, newPrime = 0;
 
-    if(b_idx % 10 == 0) {
-      if(b.isPrime()) { // ab
+    if(b_idx != 0 && b_idx % 10 == 0) {
+      if(!b.isPrime()) { // ab
         curPrime += 0.1 * d_ab;
       }
-      if(c.isPrime()) { // proposed ac (c will take place of b)
+      if(!c.isPrime()) { // proposed ac (c will take place of b)
         newPrime += 0.1 * d_ac;
       }
     }
-    if(d_idx % 10 == 0) {
-      if(d.isPrime()) { // cd
+    if(d_idx != 0 && d_idx % 10 == 0) {
+      if(!d.isPrime()) { // cd
         curPrime += 0.1 * d_cd;
       }
-      if(b.isPrime()) { // proposed bd (b will take place of c)
+      if(!b.isPrime()) { // proposed bd (b will take place of c)
         newPrime += 0.1 * d_bd;
       }
     }
@@ -118,7 +118,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       to = a_idx;
     }
 
-    //double revPrime = reverseDelta(tour, Math.min(a_idx, c_idx)+1, Math.max(a_idx, c_idx));
     double revPrime = reverseDelta(tour, from, to);
 
     double deltaPrime = (newPrime - curPrime) + revPrime;
@@ -136,7 +135,8 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       reverseDelta2(tour, from, to);
       System.out.println("from = " + from + " to = " + to + " i = " + i + " j = " + j + " deltaD = " + deltaD +
           " newPrime = " + newPrime + " curPrime = " + curPrime + " revPrime = " + revPrime + " pre = " + pre +
-          " rev = " + rev + " verify_diff = " + verifyDiff);
+          " rev = " + rev + " verify_diff = " + verifyDiff + " a_idx = " + a_idx + " b_idx = " + b_idx + " c_idx = " +
+          c_idx + " d_idx = " + d_idx);
     }
     //return deltaD + deltaP + deltaPrime;
     return deltaD + deltaPrime;
