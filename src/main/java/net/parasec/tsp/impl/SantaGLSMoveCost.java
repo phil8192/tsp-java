@@ -88,38 +88,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     // prime delta
     double curPrime = 0, newPrime = 0;
 
-    /*
-    if(b_idx != 0 && b_idx % 10 == 0) {
-      if(!b.isPrime()) { // ab
-        curPrime += 0.1 * d_ab;
-      }
-      if(!c.isPrime()) { // proposed ac (c will take place of b)
-        newPrime += 0.1 * d_ac;
-      }
-    }
-    if(d_idx != 0 && d_idx % 10 == 0) {
-      if(!d.isPrime()) { // cd
-        curPrime += 0.1 * d_cd;
-      }
-      if(!b.isPrime()) { // proposed bd (b will take place of c)
-        newPrime += 0.1 * d_bd;
-      }
-    }
-    */
-    if(b_idx != 0 && b_idx % 10 == 0) {
-      if(!a.isPrime()) {
-        curPrime += 0.1 * d_ab; // current (A -> B)
-        newPrime += 0.1 * d_ac; // new     (A -> C)
-      }
-    }
-    if(d_idx != 0 && d_idx % 10 == 0) {
-      if(!c.isPrime()) {
-        curPrime += 0.1 * d_cd; // current (C -> D)
-      }
-      if(!b.isPrime()) {
-        newPrime += 0.1 * d_bd; // new     (B -> D)
-      }
-    }
 
     // FLS currently reverses part of tour that does not need to be wrapped around.
     // todo: will need to select side which minimises prime penalty.
@@ -127,11 +95,49 @@ public class SantaGLSMoveCost extends GLSMoveCost {
 
     final int from, to;
     if(a_idx < c_idx) {
-      from = b_idx; // a_idx + 1;
+
+      // A -> B before C -> D. will reverse between B <-> C (inclusive)
+      from = b_idx;
       to = c_idx;
+
+      if(b_idx % 10 == 0) {
+        // A stays in place.
+        if(!a.isPrime()) {
+          curPrime += 0.1 * d_ab; // current (A -> B)
+          newPrime += 0.1 * d_ac; // new     (A -> C)
+        }
+      }
+      if(d_idx != 0 && d_idx % 10 == 0) {
+        // D stays in place.
+        if(!c.isPrime()) {
+          curPrime += 0.1 * d_cd; // current (C -> D)
+        }
+        if(!b.isPrime()) {
+          newPrime += 0.1 * d_bd; // new     (B -> D)
+        }
+      }
     } else {
-      from = d_idx; //c_idx + 1;
+
+      // C -> D before A -> B. will reverse between D <-> A (inclusive)
+      from = d_idx;
       to = a_idx;
+
+      if(b_idx != 0 && b_idx % 10 == 0) {
+        // B stays in place.
+        if(!a.isPrime()) {
+          curPrime += 0.1 * d_ab; // current (A -> B)
+        }
+        if(!d.isPrime()) {
+          newPrime += 0.1 * d_bd; // new     (D -> B)
+        }
+      }
+      if(d_idx % 10 == 0) {
+        // C stays in place.
+        if(!c.isPrime()) {
+          curPrime += 0.1 * d_cd; // current (C -> D)
+          newPrime += 0.1 * d_ac; // new     (C -> A)
+        }
+      }
     }
 
     double revPrime = reverseDelta(tour, from, to);
