@@ -88,6 +88,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     // prime delta
     double curPrime = 0, newPrime = 0;
 
+    /*
     if(b_idx != 0 && b_idx % 10 == 0) {
       if(!b.isPrime()) { // ab
         curPrime += 0.1 * d_ab;
@@ -102,6 +103,21 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       }
       if(!b.isPrime()) { // proposed bd (b will take place of c)
         newPrime += 0.1 * d_bd;
+      }
+    }
+    */
+    if(b_idx != 0 && b_idx % 10 == 0) {
+      if(!a.isPrime()) {
+        curPrime += 0.1 * d_ab; // current (A -> B)
+        newPrime += 0.1 * d_ac; // new     (A -> C)
+      }
+    }
+    if(d_idx != 0 && d_idx % 10 == 0) {
+      if(!c.isPrime()) {
+        curPrime += 0.1 * d_cd; // current (C -> D)
+      }
+      if(!b.isPrime()) {
+        newPrime += 0.1 * d_bd; // new     (B -> D)
       }
     }
 
