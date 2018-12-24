@@ -41,7 +41,7 @@ public class GLS implements TSP {
     // 175955 = 55.61s
     //penalties = new ArrayPenaltyMatrix(points.length);
     // 175955 = 89.43s
-    try{penalties = new BFPM(points.length);}catch(IOException e){e.printStackTrace();}
+    try{penalties = new BFPM(points.length, "/mnt/nvme/phil/bfm.matrix");}catch(IOException e){e.printStackTrace();}
     GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, points.length); //GLSMoveCost(penalties, 0, points.length);
     FLS fls = new FLS(gmc);
     System.out.println("start opt 1");

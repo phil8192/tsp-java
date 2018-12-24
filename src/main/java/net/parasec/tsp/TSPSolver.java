@@ -1,16 +1,18 @@
 package net.parasec.tsp;
 
-import net.parasec.tsp.impl.Point;
-import net.parasec.tsp.impl.FLS;
-import net.parasec.tsp.impl.MutateFLS;
-import net.parasec.tsp.impl.GLS;
+import net.parasec.tsp.impl.*;
+
+import java.io.IOException;
 
 public class TSPSolver {
   public static TSP instance(String solver) {
     if(solver == null) throw new IllegalArgumentException();
     TSP tspSolver;
     if(solver.equals("fls")) {
-      tspSolver = new FLS();
+      PenaltyMatrix penalties=null;
+      try{penalties = new BFPM(197769, "/mnt/nvme/phil/bfm_fls.matrix");}catch(IOException e){e.printStackTrace();}
+      GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, 197769); //GLSMoveCost(penalties, 0, points.length);
+      tspSolver = new FLS(gmc);
     } else if(solver.equals("mutate_fls")) {
       tspSolver = new MutateFLS();
     } else if(solver.equals("gls_fls")) {

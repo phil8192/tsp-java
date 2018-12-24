@@ -6,26 +6,65 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     super(penalties, lamda, numCities);
   }
 
+  private void reverse(final Point[] x, final int from, final int to) {
+    for(int i = from, j = to; i < j; i++, j--) {
+      final Point tmp = x[i];
+      x[i] = x[j];
+      x[j] = tmp;
+    }
+  }
+
   private double reverseDelta(Point[] tour, int from, int to) {
+    double curPrime = 0d;
+    for(int i = from + 1; i <= to; i++) {
+      if(i % 10 == 0) {
+        Point curPoint = tour[i];
+	      Point prePoint = tour[i - 1];
+	      if(!prePoint.isPrime()) {
+          curPrime += 0.1 * prePoint.distance(curPoint);
+        }
+      }
+    }
+    reverse(tour, from, to);
+    double newPrime = 0d;
+    for(int i = from + 1; i <= to; i++) {
+      if(i % 10 == 0) {
+        Point curPoint = tour[i];
+	      Point prePoint = tour[i - 1];
+	      if(!prePoint.isPrime()) {
+          newPrime += 0.1 * prePoint.distance(curPoint);
+        }
+      }
+    }
+    reverse(tour, from, to);
+    return newPrime - curPrime;
+  }
+
+  private double reverseDelta2(Point[] tour, int from, int to) {
     // need to reverse a segment in 2-opt.
     // this means a different score for reversed segment: primes will be in different places.
     // (this makes the problem difficult and hard to optimise)
     double curPrime = 0, newPrime = 0;
     int i = from + (10 - (from % 10)); // start (next 10th from b_idx)
     int j = to - (i - from); // opposite side
+    //System.out.println("i = " + i + " j = " + j);
     while(i <= to) { // up until c (inclusive)
       Point curPoint = tour[i]; // current city
       if(curPoint.isPrime()) {
-        curPrime += 0.1 * tour[i - 1].distance(curPoint);
+        //int prev = (i > 0 ? i : tour.length) - 1;
+        int prev = i - 1;
+        curPrime += 0.1 * tour[prev].distance(curPoint);
       }
       Point revPoint = tour[j]; // city in this place when reversed
       if(revPoint.isPrime()) {
-        newPrime += 0.1 * tour[j + 1].distance(revPoint); // previous will be next from revPoint.
+        //int next = (j < tour.length - 1 ? j + 1 : 0);
+        int next = j + 1;
+        newPrime += 0.1 * tour[next].distance(revPoint); // previous will be next from revPoint.
       }
       i += 10;
       j -= 10;
     }
-    return curPrime - newPrime;
+    return newPrime - curPrime;
   }
 
   public double moveCost(Point a, Point b, Point c, Point d,
@@ -38,9 +77,9 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
     // penalty delta
-    double p_ab = getPenalty(a, b), p_cd = getPenalty(c, d);
-    double p_ac = getPenalty(a, c), p_bd = getPenalty(b, d);
-    double deltaP = lamda * ((p_ac + p_bd) - (p_ab + p_cd));
+    //double p_ab = getPenalty(a, b), p_cd = getPenalty(c, d);
+    //double p_ac = getPenalty(a, c), p_bd = getPenalty(b, d);
+    //double deltaP = lamda * ((p_ac + p_bd) - (p_ab + p_cd));
 
     // prime delta
     double curPrime = 0, newPrime = 0;
@@ -62,10 +101,39 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       }
     }
 
-    double revPrime = reverseDelta(tour, b_idx, c_idx);
+    // FLS currently reverses part of tour that does not need to be wrapped around.
+    // todo: will need to select side which minimises prime penalty.
+    // reverse(points, Math.min(a, c)+1, Math.max(a, c));
+
+    final int from, to;
+    if(a_idx < c_idx) {
+      from = b_idx; // a_idx + 1;
+      to = c_idx;
+    } else {
+      from = d_idx; //c_idx + 1;
+      to = a_idx;
+    }
+
+    //double revPrime = reverseDelta(tour, Math.min(a_idx, c_idx)+1, Math.max(a_idx, c_idx));
+    double revPrime = reverseDelta(tour, from, to);
 
     double deltaPrime = (newPrime - curPrime) + revPrime;
 
-    return deltaD + deltaP + deltaPrime;
+
+    //if(deltaD + deltaPrime < 0) {
+      double pre = Point.distance(tour, from, to);
+      reverse(tour, from, to);
+      double rev = Point.distance(tour, from, to);
+      double verifyDiff = rev - pre;
+      reverse(tour, from, to);
+      int i = from + (10 - (from % 10)); // start (next 10th from b_idx)
+      int j = to - (i - from);
+      System.out.println("from = " + from + " to = " + to + " i = " + i + " j = " + j + " deltaD = " + deltaD +
+          " newPrime = " + newPrime + " curPrime = " + curPrime + " revPrime = " + revPrime + " pre = " + pre +
+          " rev = " + rev + " verify_diff = " + verifyDiff);
+    //}
+    //return deltaD + deltaP + deltaPrime;
+    return deltaD + deltaPrime;
+
   }
 }

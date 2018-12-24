@@ -17,10 +17,10 @@ public class BFPM implements PenaltyMatrix {
   private final long numCities;
   private final LRUCache lru;
 
-  public BFPM(int numCities) throws IOException {
+  public BFPM(int numCities, String file) throws IOException {
     this.numCities = numCities;
     this.lru = new LRUCache(numCities);
-    this.raf = new RandomAccessFile("/mnt/nvme/phil/bfm.matrix", "rw");
+    this.raf = new RandomAccessFile(file, "rw");
     try {
       long size = 2L * numCities*(numCities-1) / 2; // triangle - diag.
       for (long offset = 0; offset < size; offset += MAPPING_SIZE) {

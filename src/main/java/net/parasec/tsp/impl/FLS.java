@@ -104,7 +104,7 @@ public class FLS implements TSP {
       final Point d = points[j];
 
       // previous edge:
-      // see if swaping the current 2 edges:
+      // see if swapping the current 2 edges:
       // (prevPoint, currentPoint) (c, d) to:
       // (prevPoint, c) (currentPoint, d)
       // will result in an improvement. if so, set active bits for
@@ -114,12 +114,13 @@ public class FLS implements TSP {
       final double delta1 = twoOptMoveCost.moveCost(prevPoint, currentPoint, c, d, prev, current, i, j, points);
       if(delta1 < 0) {
         activate(prevPoint, currentPoint, c, d);
+        System.out.println("reverse from = " + (Math.min(prev, i)+1) + " to = " + Math.max(prev, i));
         reverse(points, Math.min(prev, i)+1, Math.max(prev, i));
         return delta1;
       }
 
       // next edge:
-      // see if swaping the current 2 edges:
+      // see if swapping the current 2 edges:
       // (currentPoint, nextPoint) (c, d) to:
       // (currentPoint, c) (nextPoint, d)
       // will result in an improvement. if so, set active bits for
@@ -129,6 +130,7 @@ public class FLS implements TSP {
       final double delta2 = twoOptMoveCost.moveCost(currentPoint, nextPoint, c, d, current, next, i, j, points);
       if(delta2 < 0) {
         activate(currentPoint, nextPoint, c, d);
+        System.out.println("reverse from = " + (Math.min(prev, i)+1) + " to = " + Math.max(prev, i));
         reverse(points, Math.min(current, i)+1, Math.max(current, i));
         return delta2;
       }
@@ -153,13 +155,12 @@ public class FLS implements TSP {
     // terminate when a full rotation of of static order from city 1:N
     // has completed without making a move (when all cities are inactive).
     // the resulting tour (points) will be "2-Optimal" -that is, no further
-    // imrovements are possible (local optima).
+    // improvements are possible (local optima).
     while(visited < numCities) {
       final Point currentPoint = points[current];
       if(currentPoint.isActive()) {
         // from the current city, try to find a move.
-        final double modified = findMove(current, currentPoint,
-        points, numCities);
+        final double modified = findMove(current, currentPoint, points, numCities);
 
         // if a move was found, go to previous city.
         // best is += modified delta.
@@ -167,6 +168,8 @@ public class FLS implements TSP {
           current = wrap(current-1, numCities);
           visited = 0;
           score += modified;
+          System.out.printf("fls score = %.4f.\n", score);
+          System.out.printf("verify    = %.4f.\n", Point.distance(points));
           continue;
         }
         currentPoint.setActive(false);
