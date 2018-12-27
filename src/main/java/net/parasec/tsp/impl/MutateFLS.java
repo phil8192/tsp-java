@@ -14,7 +14,7 @@ public class MutateFLS implements TSP {
     for(int i = 0; i < 1000000; i++) {
       Point[] pointsCopy = Point.copy(bestPoints);
 
-      for(int j = 0; i < prng.nextInt(1, 5); j++) {
+      for(int j = 0; j < prng.nextInt(1, 100); j++) {
         fls.mutate(pointsCopy);
       }
 
