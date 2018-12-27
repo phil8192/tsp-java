@@ -81,9 +81,9 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
     // penalty delta
-    //double p_ab = getPenalty(a, b), p_cd = getPenalty(c, d);
-    //double p_ac = getPenalty(a, c), p_bd = getPenalty(b, d);
-    //double deltaP = lamda * ((p_ac + p_bd) - (p_ab + p_cd));
+    double p_ab = getPenalty(a, b), p_cd = getPenalty(c, d);
+    double p_ac = getPenalty(a, c), p_bd = getPenalty(b, d);
+    double deltaP = lamda * ((p_ac + p_bd) - (p_ab + p_cd));
 
     // prime delta
     double curPrime = 0, newPrime = 0;
@@ -160,8 +160,8 @@ public class SantaGLSMoveCost extends GLSMoveCost {
           " rev = " + rev + " verify_diff = " + verifyDiff + " a_idx = " + a_idx + " b_idx = " + b_idx + " c_idx = " +
           c_idx + " d_idx = " + d_idx);
     }
-    //return deltaD + deltaP + deltaPrime;
-    return deltaD + deltaPrime;
+    return deltaD + deltaP + deltaPrime;
+    //return deltaD + deltaPrime;
 
   }
 }

@@ -1,5 +1,6 @@
 package net.parasec.tsp.impl;
 
+import net.parasec.tsp.DumpPoints;
 import net.parasec.tsp.TSP;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class GLS implements TSP {
 
     // best = 8845.8809 (175955) (183.47s) (penalties = 31312 max_penalty = 21)
     final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
+    //final double a = 0.3;
 
     final int penaltyClear = 10000000; // original implementation resets penalty matrix every millionoth iteration.
 
@@ -75,6 +77,7 @@ public class GLS implements TSP {
         bestPoints = Point.copy(points);
         bestScore = score;
         System.out.printf("best = %.4f (%d) (%.2fs) (penalties = %d max_penalty = %d)\n", bestScore, i, (System.currentTimeMillis()-l)/1000.0, numPenalties, maxPenalty);
+        DumpPoints.dump(bestPoints, "/tmp/best3.points");
       }
     }
     for(int i = 0; i < points.length; i++) {

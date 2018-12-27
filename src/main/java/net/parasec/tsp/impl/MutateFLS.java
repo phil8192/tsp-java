@@ -5,7 +5,7 @@ import net.parasec.tsp.TSP;
 
 public class MutateFLS implements TSP {
   public double optimise(Point[] points, double score) {
-    java.util.SplittableRandom prng = new java.util.SplittableRandom();
+    //java.util.SplittableRandom prng = new java.util.SplittableRandom();
     FLS fls = new FLS();
     Point[] bestPoints = points;
     double bestScore = fls.optimise(points, score);
@@ -14,9 +14,9 @@ public class MutateFLS implements TSP {
     for(int i = 0; i < 1000000; i++) {
       Point[] pointsCopy = Point.copy(bestPoints);
 
-      for(int j = 0; j < prng.nextInt(1, 100); j++) {
+      //for(int j = 0; j < prng.nextInt(1, 100); j++) {
         fls.mutate(pointsCopy);
-      }
+      //}
 
       double mutantScore = Point.distance(pointsCopy);
       System.out.println("start opt");
