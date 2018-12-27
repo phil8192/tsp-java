@@ -1,5 +1,6 @@
 package net.parasec.tsp.impl;
 
+import net.parasec.tsp.DumpPoints;
 import net.parasec.tsp.TSP;
 
 public class MutateFLS implements TSP {
@@ -12,15 +13,20 @@ public class MutateFLS implements TSP {
     double l = System.currentTimeMillis();
     for(int i = 0; i < 1000000; i++) {
       Point[] pointsCopy = Point.copy(bestPoints);
-      fls.mutate(pointsCopy);
+
+      for(int j = 0; i < prng.nextInt(1, 5); j++) {
+        fls.mutate(pointsCopy);
+      }
+
       double mutantScore = Point.distance(pointsCopy);
-      double t = System.currentTimeMillis();
+      System.out.println("start opt");
       double minimaScore = fls.optimise(pointsCopy, mutantScore);
-      //System.out.printf("minima = %.4f\n", minimaScore);
+      System.out.println("end opt");
       if(minimaScore < bestScore) {
         bestPoints = pointsCopy;
         bestScore = minimaScore;
         System.out.printf("best = %.4f (%d) (%.2fs)\n", bestScore, i, (System.currentTimeMillis()-l)/1000.0);
+        DumpPoints.dump(bestPoints, "/tmp/best3.points");
       }
     }
     for(int i = 0; i < points.length; i++) {
