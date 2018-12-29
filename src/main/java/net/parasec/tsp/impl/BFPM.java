@@ -1,10 +1,8 @@
 package net.parasec.tsp.impl;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +17,7 @@ public class BFPM implements PenaltyMatrix {
 
   public BFPM(int numCities, String file) throws IOException {
     this.numCities = numCities;
-    this.lru = new LRUCache(numCities);
+    this.lru = new LRUCache(numCities * 1000);
     this.raf = new RandomAccessFile(file, "rw");
     try {
       long size = 2L * numCities*(numCities-1) / 2; // triangle - diag.
@@ -69,6 +67,6 @@ public class BFPM implements PenaltyMatrix {
   }
 
   public void clear() {
-
+    lru.clear();
   }
 }

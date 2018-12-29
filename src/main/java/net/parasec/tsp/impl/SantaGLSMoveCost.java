@@ -75,9 +75,18 @@ public class SantaGLSMoveCost extends GLSMoveCost {
                          int a_idx, int b_idx, int c_idx, int d_idx,
                          Point[] tour) {
 
+    double _ab = a._distance(b), _cd = c._distance(d);
+    double _ac = a._distance(c), _bd = b._distance(d);
+    // triangle of inequality: at least 1 edge will be shorter.
+    // if both will be longer, there will be no improvement.
+    // return a positive delta to indicate no improvement.
+    if(_ab < _ac && _cd < _bd) return 1;
+
     // distance delta: original edges (ab) (cd), candidate edges (ac) (bd).
-    double d_ab = a.distance(b), d_cd = c.distance(d);
-    double d_ac = a.distance(c), d_bd = b.distance(d);
+    //double d_ab = a.distance(b), d_cd = c.distance(d);
+    //double d_ac = a.distance(c), d_bd = b.distance(d);
+    double d_ab = Maths.sqrt(_ab), d_cd = Maths.sqrt(_cd);
+    double d_ac = Maths.sqrt(_ac), d_bd = Maths.sqrt(_bd);
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
     // penalty delta

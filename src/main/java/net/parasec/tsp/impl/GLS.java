@@ -34,10 +34,11 @@ public class GLS implements TSP {
     // best = 8845.8809 (175955) (84.06s) (penalties = 31312 max_penalty = 21)
 
     // best = 8845.8809 (175955) (183.47s) (penalties = 31312 max_penalty = 21)
-    final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
-    //final double a = 0.3;
+    //final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
+    //final double a = 0.025;
+    final double a = 0.03;
 
-    final int penaltyClear = 10000000; // original implementation resets penalty matrix every millionoth iteration.
+    final int penaltyClear = 100000; // original implementation resets penalty matrix every millionoth iteration.
 
     PenaltyMatrix penalties=null;
     // 175955 = 55.61s
@@ -57,8 +58,7 @@ public class GLS implements TSP {
     gmc.setLamda(a * (bestScore/points.length));
 
     double l = System.currentTimeMillis();
-    //for(int i = 0; i < 2000000; i++) {
-    for(int i = 0; i < 10000000; i++) {
+    for(int i = 0; i < 1000000000; i++) {
 
       if(i % penaltyClear == 0) {
         penalties.clear();
@@ -77,7 +77,7 @@ public class GLS implements TSP {
         bestPoints = Point.copy(points);
         bestScore = score;
         System.out.printf("best = %.4f (%d) (%.2fs) (penalties = %d max_penalty = %d)\n", bestScore, i, (System.currentTimeMillis()-l)/1000.0, numPenalties, maxPenalty);
-        DumpPoints.dump(bestPoints, "/tmp/best3.points");
+        DumpPoints.dump(bestPoints, "/home/phil/santa/best_gls.points");
       }
     }
     for(int i = 0; i < points.length; i++) {

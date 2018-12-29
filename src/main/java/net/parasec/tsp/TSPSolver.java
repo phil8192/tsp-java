@@ -10,7 +10,7 @@ public class TSPSolver {
     TSP tspSolver;
     if(solver.equals("fls")) {
       PenaltyMatrix penalties=null;
-      try{penalties = new BFPM(197769, "/mnt/nvme/phil/bfm2.matrix");}catch(IOException e){e.printStackTrace();}
+      try{penalties = new BFPM(197769, "/mnt/nvme/phil/bfm3.matrix");}catch(IOException e){e.printStackTrace();}
       GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, 197769); //GLSMoveCost(penalties, 0, points.length);
       tspSolver = new FLS(gmc);
     } else if(solver.equals("mutate_fls")) {
