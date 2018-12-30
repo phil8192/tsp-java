@@ -35,8 +35,8 @@ public class GLS implements TSP {
 
     // best = 8845.8809 (175955) (183.47s) (penalties = 31312 max_penalty = 21)
     //final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
+    //final double a = 0.025;
     final double a = 0.025;
-    //final double a = 0.03;
 
     final int penaltyClear = 1000000; // original implementation resets penalty matrix every millionoth iteration.
 
@@ -129,9 +129,9 @@ public class GLS implements TSP {
     for(int i = 1; i < points.length; i++) {
       final Point pre = points[i-1], cur = points[i];
       double pre_d = pre.distance(cur);
-      if(i % 10 == 0 && !pre.isPrime()) {
-        pre_d *= 1.1;
-      }
+      //if(i % 10 == 0 && !pre.isPrime()) {
+      //  pre_d *= 1.1;
+      //}
       d += pre_d;
       d += lamda * penalties.getPenalty(pre.getId(), cur.getId());
     }

@@ -75,8 +75,9 @@ public class SantaGLSMoveCost extends GLSMoveCost {
                          int a_idx, int b_idx, int c_idx, int d_idx,
                          Point[] tour) {
 
-    double _ab = a._distance(b), _cd = c._distance(d);
-    double _ac = a._distance(c), _bd = b._distance(d);
+    double _ab = a._distance(b), _cd = c._distance(d); // current
+    double _ac = a._distance(c), _bd = b._distance(d); // new
+
     // triangle of inequality: at least 1 edge will be shorter.
     // if both will be longer, there will be no improvement.
     // return a positive delta to indicate no improvement.
@@ -90,9 +91,11 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
     // penalty delta
-    double old_penalty = getPenalty(a, b) + getPenalty(c, d);
+    double cur_penalty = getPenalty(a, b) + getPenalty(c, d);
     double new_penalty = getPenalty(a, c) + getPenalty(b, d);
-    double deltaP = lamda * (new_penalty - old_penalty);
+    double deltaP = lamda * (new_penalty - cur_penalty);
+
+    /*
 
     // prime delta
     double curPrime = 0, newPrime = 0;
@@ -169,7 +172,8 @@ public class SantaGLSMoveCost extends GLSMoveCost {
           " rev = " + rev + " verify_diff = " + verifyDiff + " a_idx = " + a_idx + " b_idx = " + b_idx + " c_idx = " +
           c_idx + " d_idx = " + d_idx);
     }
-    return deltaD + deltaP + deltaPrime;
+    */
+    return deltaD + deltaP; // + deltaPrime;
     //return deltaD + deltaPrime;
 
   }

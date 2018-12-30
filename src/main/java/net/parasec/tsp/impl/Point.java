@@ -66,9 +66,9 @@ public final class Point {
       //d += points[i-1].distance(points[i]);
       final Point pre = points[i-1], cur = points[i];
       double distance = pre.distance(cur);
-      if(i % 10 == 0 && !pre.isPrime()) {
-        distance *= 1.1;
-      }
+      //if(i % 10 == 0 && !pre.isPrime()) {
+      //  distance *= 1.1;
+      //}
       d += distance;
     }
     return d;
