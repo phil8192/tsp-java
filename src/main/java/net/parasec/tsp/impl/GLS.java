@@ -36,7 +36,6 @@ public class GLS implements TSP {
     // best = 8845.8809 (175955) (183.47s) (penalties = 31312 max_penalty = 21)
     //final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
     final double a = 0.025;
-    //final double a = 0.025;
     //final double a = 0.03;
 
     final int penaltyClear = 1000000; // original implementation resets penalty matrix every millionoth iteration.
@@ -50,7 +49,7 @@ public class GLS implements TSP {
     FLS fls = new FLS(gmc);
     System.out.println("start opt 1");
     double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
-    double augScore = bestScore;
+    double augScore;
     Point[] bestPoints = Point.copy(points);
 
     // "cost of a local minimum tour produced by local search
