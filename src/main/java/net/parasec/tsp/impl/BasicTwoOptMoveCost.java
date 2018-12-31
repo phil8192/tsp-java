@@ -18,7 +18,7 @@ public class BasicTwoOptMoveCost implements TwoOptMoveCost {
   * edges, avoid 4 square root operations by comparing squares. this results
   * in a 40% speed up in this code.
   */
-  public double moveCost2(Point a, Point b, Point c, Point d,
+  public double moveCost(Point a, Point b, Point c, Point d,
                          int a_idx, int b_idx, int c_idx, int d_idx,
                          Point[] tour) {
 
@@ -69,7 +69,7 @@ public class BasicTwoOptMoveCost implements TwoOptMoveCost {
   }
 
 
-  public double moveCost(Point a, Point b, Point c, Point d,
+  public double moveCost2(Point a, Point b, Point c, Point d,
                          int a_idx, int b_idx, int c_idx, int d_idx,
                          Point[] tour) {
 

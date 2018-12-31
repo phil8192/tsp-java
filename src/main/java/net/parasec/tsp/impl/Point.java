@@ -5,8 +5,8 @@ public final class Point {
   private int id;
   private final double x;
   private final double y;
-  //private boolean active = true;
-  private boolean active = false;
+  private boolean active = true;
+  //private boolean active = false;
 
   private final boolean prime;
   private boolean _isPrime(int n) {

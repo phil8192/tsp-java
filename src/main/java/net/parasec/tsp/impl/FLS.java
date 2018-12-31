@@ -114,7 +114,7 @@ public class FLS implements TSP {
       final double delta1 = twoOptMoveCost.moveCost(prevPoint, currentPoint, c, d, prev, current, i, j, points);
       if(delta1 < 0) {
         activate(prevPoint, currentPoint, c, d);
-        System.out.println("reverse from = " + (Math.min(prev, i)+1) + " to = " + Math.max(prev, i));
+        //System.out.println("reverse from = " + (Math.min(prev, i)+1) + " to = " + Math.max(prev, i));
         reverse(points, Math.min(prev, i)+1, Math.max(prev, i));
         return delta1;
       }
@@ -130,7 +130,7 @@ public class FLS implements TSP {
       final double delta2 = twoOptMoveCost.moveCost(currentPoint, nextPoint, c, d, current, next, i, j, points);
       if(delta2 < 0) {
         activate(currentPoint, nextPoint, c, d);
-        System.out.println("reverse from = " + (Math.min(prev, i)+1) + " to = " + Math.max(prev, i));
+        //System.out.println("reverse from = " + (Math.min(prev, i)+1) + " to = " + Math.max(prev, i));
         reverse(points, Math.min(current, i)+1, Math.max(current, i));
         return delta2;
       }
@@ -168,8 +168,8 @@ public class FLS implements TSP {
           current = wrap(current-1, numCities);
           visited = 0;
           score += modified;
-          System.out.printf("fls score = %.4f.\n", score);
-          System.out.printf("verify    = %.4f.\n", Point.distance(points));
+          //System.out.printf("fls score = %.4f.\n", score);
+          //System.out.printf("verify    = %.4f.\n", Point.distance(points));
           continue;
         }
         currentPoint.setActive(false);

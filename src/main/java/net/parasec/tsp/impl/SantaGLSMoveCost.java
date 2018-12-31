@@ -78,11 +78,19 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double _ab = a._distance(b), _cd = c._distance(d); // current
     double _ac = a._distance(c), _bd = b._distance(d); // new
 
+
+    // penalty delta
+
+
+
     // triangle of inequality: at least 1 edge will be shorter.
     // if both will be longer, there will be no improvement.
     // return a positive delta to indicate no improvement.
-    if(_ab < _ac && _cd < _bd) return 1;
+    //if((_ab < _ac && _cd < _bd) && deltaP >= 0) return 1;
+    //if(((lamda*ab_pen) + _ab) < ((lamda*ac_pen) + _ac) && ((lamda*cd_pen) + _cd) < ((lamda*bd_pen) + _bd)) return 1;
+    //if(_ab < _ac && _cd < _bd) return 1;
 
+    //System.out.println(new_penalty + " " +cur_penalty);
     // distance delta: original edges (ab) (cd), candidate edges (ac) (bd).
     //double d_ab = a.distance(b), d_cd = c.distance(d);
     //double d_ac = a.distance(c), d_bd = b.distance(d);
@@ -90,13 +98,14 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double d_ac = Maths.sqrt(_ac), d_bd = Maths.sqrt(_bd);
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
-    // penalty delta
-    double cur_penalty = getPenalty(a, b) + getPenalty(c, d);
-    double new_penalty = getPenalty(a, c) + getPenalty(b, d);
+    double ab_pen = getPenalty(a, b), cd_pen = getPenalty(c, d);
+    double ac_pen = getPenalty(a, c), bd_pen = getPenalty(b, d);
+    double cur_penalty = ab_pen + cd_pen;
+    double new_penalty = ac_pen + bd_pen;
     double deltaP = lamda * (new_penalty - cur_penalty);
 
-    /*
 
+/*
     // prime delta
     double curPrime = 0, newPrime = 0;
 
@@ -157,6 +166,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double deltaPrime = (newPrime - curPrime) + revPrime;
 
 
+
     if(deltaD + deltaPrime < 0) {
       double pre = Point.distance(tour, from, to);
       reverse(tour, from, to);
@@ -173,7 +183,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
           c_idx + " d_idx = " + d_idx);
     }
     */
-    return deltaD + deltaP; // + deltaPrime;
+    return deltaD + deltaP;// + deltaPrime;
     //return deltaD + deltaPrime;
 
   }
