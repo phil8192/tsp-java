@@ -19,9 +19,9 @@ public class MutateFLS implements TSP {
       //}
 
       double mutantScore = Point.distance(pointsCopy);
-      System.out.println("start opt");
+      //System.out.println("start opt");
       double minimaScore = fls.optimise(pointsCopy, mutantScore);
-      System.out.println("end opt");
+      //System.out.println("end opt");
       if(minimaScore < bestScore) {
         bestPoints = pointsCopy;
         bestScore = minimaScore;
