@@ -79,7 +79,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double _ac = a._distance(c), _bd = b._distance(d); // new
 
 
-    // penalty delta
+
 
 
 
@@ -88,7 +88,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     // return a positive delta to indicate no improvement.
     //if((_ab < _ac && _cd < _bd) && deltaP >= 0) return 1;
     //if(((lamda*ab_pen) + _ab) < ((lamda*ac_pen) + _ac) && ((lamda*cd_pen) + _cd) < ((lamda*bd_pen) + _bd)) return 1;
-    //if(_ab < _ac && _cd < _bd) return 1;
+    if(_ab < _ac && _cd < _bd) return 1;
 
     //System.out.println(new_penalty + " " +cur_penalty);
     // distance delta: original edges (ab) (cd), candidate edges (ac) (bd).
@@ -98,11 +98,13 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double d_ac = Maths.sqrt(_ac), d_bd = Maths.sqrt(_bd);
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
+
     double ab_pen = getPenalty(a, b), cd_pen = getPenalty(c, d);
     double ac_pen = getPenalty(a, c), bd_pen = getPenalty(b, d);
     double cur_penalty = ab_pen + cd_pen;
     double new_penalty = ac_pen + bd_pen;
     double deltaP = lamda * (new_penalty - cur_penalty);
+
 
 
 /*

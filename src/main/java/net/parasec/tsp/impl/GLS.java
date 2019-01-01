@@ -28,7 +28,32 @@ public class GLS implements TSP {
     //    0.3: best = 8892.9067 (151628) (54.70s) (penalties = 75256 max_penalty = 7)
     //      1: best = 9154.7613 (109239) (53.25s) (penalties = 98417 max_penalty = 3)
 
-    // lru+mmf (not worth it..)
+
+	  // without triangle 
+	  // best = 8844.1745 (194537) (126.22s) (penalties = 10881 max_penalty = 73)
+
+
+	  // with triangle
+	  // best = 8844.3483 (455303) (50.73s) (penalties = 17500 max_penalty = 101)
+	  // best = 8844.3264 (1176885) (136.47s) (penalties = 30239 max_penalty = 149)
+	  // best = 8843.9242 (1455928) (170.52s) (penalties = 34298 max_penalty = 169)
+	  // best = 8843.0274 (1583371) (186.37s) (penalties = 36073 max_penalty = 171)
+	  // best = 8843.0068 (2970446) (364.77s) (penalties = 52361 max_penalty = 225)
+	  // best = 8842.9950 (2970474) (364.77s) (penalties = 52361 max_penalty = 225)
+
+     	  // with triangle + deltaP >= 0
+	  // best = 8844.1745 (194537) (127.37s) (penalties = 10881 max_penalty = 73) 
+	  // same as without triangle: cur_penalty will always be >= 1 during GLS (dont look bits set to 1)
+
+
+	  // edge penalties.. 
+	// best = 8844.0546 (853271) (532.46s) (penalties = 25045 max_penalty = 132)
+	// best = 8843.7396 (1648109) (1022.95s) (penalties = 37031 max_penalty = 172)
+	// best = 8843.0392 (1648110) (1022.95s) (penalties = 37031 max_penalty = 172)
+	// best = 8843.0274 (2045430) (1270.90s) (penalties = 42116 max_penalty = 192)
+	// best = 8842.9950 (2085605) (1295.77s) (penalties = 42660 max_penalty = 192)
+
+	  // lru+mmf (not worth it..)
     // best = 8847.2004 (175895) (179.35s) (penalties = 31311 max_penalty = 21)
     // just mmf
     // best = 8845.8809 (175955) (84.06s) (penalties = 31312 max_penalty = 21)
@@ -38,7 +63,7 @@ public class GLS implements TSP {
     //final double a = 0.025;
     final double a = 0.05;
 
-    final int penaltyClear = 1000000; // original implementation resets penalty matrix every millionoth iteration.
+    final int penaltyClear = 10000000; // original implementation resets penalty matrix every millionoth iteration.
 
     PenaltyMatrix penalties=null;
     // 175955 = 55.61s
@@ -60,9 +85,9 @@ public class GLS implements TSP {
     double l = System.currentTimeMillis();
     for(int i = 0; i < 1000000000; i++) {
 
-      //if(i % penaltyClear == 0) {
-      //  penalties.clear();
-      //}
+      if(i % penaltyClear == 0) {
+        penalties.clear();
+      }
 
       penalise(points, penalties);
       augScore = getAugmentedScore(points, penalties, gmc.getLamda());
