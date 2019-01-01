@@ -14,6 +14,8 @@ public class GLS implements TSP {
 
   public double optimise(Point[] points, double score) {
 
+    // rat783 optimal = 8806.
+
     // rat783
     // 0.0001: best = 9278.5988 (247180) (60.03s) (penalties = 1641 max_penalty = 842)
     //  0.001: best = 8921.7626 (259567) (60.28s) (penalties = 4784 max_penalty = 224)
@@ -41,6 +43,15 @@ public class GLS implements TSP {
 	  // best = 8843.0068 (2970446) (364.77s) (penalties = 52361 max_penalty = 225)
 	  // best = 8842.9950 (2970474) (364.77s) (penalties = 52361 max_penalty = 225)
 
+
+
+
+    // best = 8842.9950 (1127653) (118.21s) (penalties = 19953 max_penalty = 220)   0.025
+    // best = 8842.9950 (2970474) (360.63s) (penalties = 52361 max_penalty = 225) 0.05
+    // best = 8842.9950 (1216367) (148.81s) (penalties = 39262 max_penalty = 119) 0.075
+    // best = 8842.9950 (953709) (109.89s) (penalties = 39960 max_penalty = 92) 0.1
+    // best = 8842.9950 (1797569) (231.09s) (penalties = 72804 max_penalty = 100) 0.15
+
      	  // with triangle + deltaP >= 0
 	  // best = 8844.1745 (194537) (127.37s) (penalties = 10881 max_penalty = 73) 
 	  // same as without triangle: cur_penalty will always be >= 1 during GLS (dont look bits set to 1)
@@ -63,7 +74,7 @@ public class GLS implements TSP {
     //final double a = 0.025;
     final double a = 0.3;
 
-    final int penaltyClear = 10000; // original implementation resets penalty matrix every millionoth iteration.
+    final int penaltyClear = 1000000; // original implementation resets penalty matrix every millionoth iteration.
 
     PenaltyMatrix penalties=null;
     // 175955 = 55.61s
@@ -76,6 +87,7 @@ public class GLS implements TSP {
     double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
     double augScore;
     Point[] bestPoints = Point.copy(points);
+    DumpPoints.dump(bestPoints, "/home/phil/santa/best_gls.points");
 
     // "cost of a local minimum tour produced by local search
     // (e.g. first local minimum before penalties are applied)"
@@ -85,13 +97,17 @@ public class GLS implements TSP {
     double l = System.currentTimeMillis();
     for(int i = 0; i < 1000000000; i++) {
 
-      //if(i % penaltyClear == 0) {
-      //  penalties.clear();
-     // 	numPenalties = 0;
-//	maxPenalty = 0;
-  //    }
+//      if(i % penaltyClear == 0) {
+//        penalties.clear();
+//        numPenalties = 0;
+//        maxPenalty = 0;
+//        for(Point p : points) {
+//          p.setActive(true);
+//        }
+//      } else {
+        penalise(points, penalties);
+ //     }
 
-      penalise(points, penalties);
       augScore = getAugmentedScore(points, penalties, gmc.getLamda());
 
       //System.out.println("start opt " + i);
@@ -103,9 +119,15 @@ public class GLS implements TSP {
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
         bestScore = score;
+
+        //double lamda = a * (bestScore/points.length);
+        //gmc.setLamda(lamda);
+
         System.out.printf("best = %.4f (%d) (%.2fs) (penalties = %d max_penalty = %d)\n", bestScore, i, (System.currentTimeMillis()-l)/1000.0, numPenalties, maxPenalty);
         DumpPoints.dump(bestPoints, "/home/phil/santa/best_gls.points");
-      }
+      } //else {
+        //if(i % 10000 == 0 ) fls.mutate(points);
+      //}
     }
     for(int i = 0; i < points.length; i++) {
       points[i] = bestPoints[i];

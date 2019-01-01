@@ -106,7 +106,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double deltaP = lamda * (new_penalty - cur_penalty);
 
 
-
 /*
     // prime delta
     double curPrime = 0, newPrime = 0;
