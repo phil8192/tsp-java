@@ -12,7 +12,7 @@ public class BFPM implements PenaltyMatrix {
   private static final int MAPPING_SIZE = 1 << 30; // 1024*1024*1024 bytes/1 gig.
   private final RandomAccessFile raf;
   private final List<ByteBuffer> mappings = new ArrayList<>();
-  private final int numCities;
+  private final long numCities;
   private final LRUCache lru;
 
   public BFPM(int numCities, String file) throws IOException {
