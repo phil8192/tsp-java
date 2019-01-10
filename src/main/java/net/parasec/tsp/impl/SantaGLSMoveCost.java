@@ -2,6 +2,10 @@ package net.parasec.tsp.impl;
 
 public class SantaGLSMoveCost extends GLSMoveCost {
 
+
+	private static final double PEN = 0.1;
+
+
   public SantaGLSMoveCost(final PenaltyMatrix penalties, double lamda, int numCities) {
     super(penalties, lamda, numCities);
   }
@@ -15,14 +19,15 @@ public class SantaGLSMoveCost extends GLSMoveCost {
   }
 
   private double reverseDelta2(Point[] tour, int from, int to) {
-    double curPrime = 0d;
+
+	  double curPrime = 0d;
     for(int i = from + 1; i <= to; i++) {
       if(i % 10 == 0) {
        // System.out.println("ii = " + i);
         Point curPoint = tour[i];
 	      Point prePoint = tour[i - 1];
 	      if(!prePoint.isPrime()) {
-          curPrime += 0.1 * prePoint.distance(curPoint);
+          curPrime += PEN * prePoint.distance(curPoint);
         }
       }
     }
@@ -34,7 +39,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
         Point curPoint = tour[i];
 	      Point prePoint = tour[i - 1];
 	      if(!prePoint.isPrime()) {
-          newPrime += 0.1 * prePoint.distance(curPoint);
+          newPrime += PEN * prePoint.distance(curPoint);
         }
       }
     }
@@ -51,17 +56,20 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     int i = from + (10 - (from % 10)); // start (next 10th from b_idx)
     int j = to - (i - from); // opposite side
     //System.out.println("i = " + i + " j = " + j);
+
+
+
     while(i <= to) { // up until c (inclusive)
       //System.out.println("i  = " + i);
       Point prePoint = tour[i - 1]; // pre city
       if(!prePoint.isPrime()) {
         //int prev = (i > 0 ? i : tour.length) - 1;
-        curPrime += 0.1 * prePoint.distance(tour[i]);
+        curPrime += PEN * prePoint.distance(tour[i]);
       }
       Point revPrePoint = tour[j + 1]; // previous city in this place when reversed
       if(!revPrePoint.isPrime()) {
         //int next = (j < tour.length - 1 ? j + 1 : 0);
-        newPrime += 0.1 * tour[j].distance(revPrePoint); // previous will be next from revPoint.
+        newPrime += PEN * tour[j].distance(revPrePoint); // previous will be next from revPoint.
       }
       i += 10;
       j -= 10;
@@ -82,7 +90,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
 
 
 
-
     // triangle of inequality: at least 1 edge will be shorter.
     // if both will be longer, there will be no improvement.
     // return a positive delta to indicate no improvement.
@@ -98,11 +105,13 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double d_ac = Maths.sqrt(_ac), d_bd = Maths.sqrt(_bd);
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
+
     double ab_pen = getPenalty(a, b), cd_pen = getPenalty(c, d);
     double ac_pen = getPenalty(a, c), bd_pen = getPenalty(b, d);
     double cur_penalty = ab_pen + cd_pen;
     double new_penalty = ac_pen + bd_pen;
     double deltaP = lamda * (new_penalty - cur_penalty);
+
 
 
     // prime delta
@@ -123,17 +132,18 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       if(b_idx % 10 == 0) {
         // A stays in place.
         if(!a.isPrime()) {
-          curPrime += 0.1 * d_ab; // current (A -> B)
-          newPrime += 0.1 * d_ac; // new     (A -> C)
-        }
+          curPrime += PEN * d_ab; // current (A -> B)
+          newPrime += PEN * d_ac; // new     (A -> C)
+
+	}
       }
       if(d_idx != 0 && d_idx % 10 == 0) {
         // D stays in place.
         if(!c.isPrime()) {
-          curPrime += 0.1 * d_cd; // current (C -> D)
+          curPrime += PEN * d_cd; // current (C -> D)
         }
         if(!b.isPrime()) {
-          newPrime += 0.1 * d_bd; // new     (B -> D)
+          newPrime += PEN * d_bd; // new     (B -> D)
         }
       }
     } else {
@@ -145,17 +155,17 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       if(b_idx != 0 && b_idx % 10 == 0) {
         // B stays in place.
         if(!a.isPrime()) {
-          curPrime += 0.1 * d_ab; // current (A -> B)
+          curPrime += PEN * d_ab; // current (A -> B)
         }
         if(!d.isPrime()) {
-          newPrime += 0.1 * d_bd; // new     (D -> B)
+          newPrime += PEN * d_bd; // new     (D -> B)
         }
       }
       if(d_idx % 10 == 0) {
         // C stays in place.
         if(!c.isPrime()) {
-          curPrime += 0.1 * d_cd; // current (C -> D)
-          newPrime += 0.1 * d_ac; // new     (C -> A)
+          curPrime += PEN * d_cd; // current (C -> D)
+          newPrime += PEN * d_ac; // new     (C -> A)
         }
       }
     }
@@ -163,7 +173,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double revPrime = reverseDelta(tour, from, to);
 
     double deltaPrime = (newPrime - curPrime) + revPrime;
-
 
     if(deltaD + deltaPrime < 0) {
       double pre = Point.distance(tour, from, to);
@@ -180,7 +189,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
           " rev = " + rev + " verify_diff = " + verifyDiff + " a_idx = " + a_idx + " b_idx = " + b_idx + " c_idx = " +
           c_idx + " d_idx = " + d_idx);
     }
-  
+
     return deltaD + deltaP + deltaPrime;
 
   }
