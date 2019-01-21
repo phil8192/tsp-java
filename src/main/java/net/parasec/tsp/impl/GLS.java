@@ -2,15 +2,27 @@ package net.parasec.tsp.impl;
 
 import net.parasec.tsp.DumpPoints;
 import net.parasec.tsp.TSP;
+import net.parasec.tsp.TourDistance;
+
 import java.util.ArrayList;
-import java.io.IOException;
 
 
 public class GLS implements TSP {
 
-  private int maxPenalty = 0 ;
-  private int numPenalties = 0;
+  private final TourDistance tourDistance;
+  private final TSP localSearch;
+  private final PenaltyMatrix penalties;
+  private final int maxRuns;
+  private final String output;
 
+
+  public GLS(TourDistance tourDistance, TSP localSearch, PenaltyMatrix penalties, int maxRuns, String output) {
+    this.tourDistance = tourDistance;
+    this.localSearch = localSearch;
+    this.penalties = penalties;
+    this.maxRuns = maxRuns;
+    this.output = output;
+  }
 
   public double optimise(Point[] points, double score) {
 
@@ -31,19 +43,17 @@ public class GLS implements TSP {
     //      1: best = 9154.7613 (109239) (53.25s) (penalties = 98417 max_penalty = 3)
 
 
-	  // without triangle 
-	  // best = 8844.1745 (194537) (126.22s) (penalties = 10881 max_penalty = 73)
+    // without triangle
+    // best = 8844.1745 (194537) (126.22s) (penalties = 10881 max_penalty = 73)
 
 
-	  // with triangle
-	  // best = 8844.3483 (455303) (50.73s) (penalties = 17500 max_penalty = 101)
-	  // best = 8844.3264 (1176885) (136.47s) (penalties = 30239 max_penalty = 149)
-	  // best = 8843.9242 (1455928) (170.52s) (penalties = 34298 max_penalty = 169)
-	  // best = 8843.0274 (1583371) (186.37s) (penalties = 36073 max_penalty = 171)
-	  // best = 8843.0068 (2970446) (364.77s) (penalties = 52361 max_penalty = 225)
-	  // best = 8842.9950 (2970474) (364.77s) (penalties = 52361 max_penalty = 225)
-
-
+    // with triangle
+    // best = 8844.3483 (455303) (50.73s) (penalties = 17500 max_penalty = 101)
+    // best = 8844.3264 (1176885) (136.47s) (penalties = 30239 max_penalty = 149)
+    // best = 8843.9242 (1455928) (170.52s) (penalties = 34298 max_penalty = 169)
+    // best = 8843.0274 (1583371) (186.37s) (penalties = 36073 max_penalty = 171)
+    // best = 8843.0068 (2970446) (364.77s) (penalties = 52361 max_penalty = 225)
+    // best = 8842.9950 (2970474) (364.77s) (penalties = 52361 max_penalty = 225)
 
 
     // best = 8842.9950 (1127653) (118.21s) (penalties = 19953 max_penalty = 220)   0.025
@@ -52,90 +62,62 @@ public class GLS implements TSP {
     // best = 8842.9950 (953709) (109.89s) (penalties = 39960 max_penalty = 92) 0.1
     // best = 8842.9950 (1797569) (231.09s) (penalties = 72804 max_penalty = 100) 0.15
 
-     	  // with triangle + deltaP >= 0
-	  // best = 8844.1745 (194537) (127.37s) (penalties = 10881 max_penalty = 73) 
-	  // same as without triangle: cur_penalty will always be >= 1 during GLS (dont look bits set to 1)
+    // with triangle + deltaP >= 0
+    // best = 8844.1745 (194537) (127.37s) (penalties = 10881 max_penalty = 73)
+    // same as without triangle: cur_penalty will always be >= 1 during GLS (dont look bits set to 1)
 
 
-	  // edge penalties.. 
-	// best = 8844.0546 (853271) (532.46s) (penalties = 25045 max_penalty = 132)
-	// best = 8843.7396 (1648109) (1022.95s) (penalties = 37031 max_penalty = 172)
-	// best = 8843.0392 (1648110) (1022.95s) (penalties = 37031 max_penalty = 172)
-	// best = 8843.0274 (2045430) (1270.90s) (penalties = 42116 max_penalty = 192)
-	// best = 8842.9950 (2085605) (1295.77s) (penalties = 42660 max_penalty = 192)
+    // edge penalties..
+    // best = 8844.0546 (853271) (532.46s) (penalties = 25045 max_penalty = 132)
+    // best = 8843.7396 (1648109) (1022.95s) (penalties = 37031 max_penalty = 172)
+    // best = 8843.0392 (1648110) (1022.95s) (penalties = 37031 max_penalty = 172)
+    // best = 8843.0274 (2045430) (1270.90s) (penalties = 42116 max_penalty = 192)
+    // best = 8842.9950 (2085605) (1295.77s) (penalties = 42660 max_penalty = 192)
 
-	  // lru+mmf (not worth it..)
+    // lru+mmf (not worth it..)
     // best = 8847.2004 (175895) (179.35s) (penalties = 31311 max_penalty = 21)
     // just mmf
     // best = 8845.8809 (175955) (84.06s) (penalties = 31312 max_penalty = 21)
 
     // best = 8845.8809 (175955) (183.47s) (penalties = 31312 max_penalty = 21)
     //final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
-    final double a = 0.025;
+    //final double a = 0.025;
 
-    final int penaltyClear = 1000000; // original implementation resets penalty matrix every millionoth iteration.
-
-    PenaltyMatrix penalties=null;
+    //PenaltyMatrix penalties=null;
     // 175955 = 55.61s
     //penalties = new ArrayPenaltyMatrix(points.length);
     // 175955 = 89.43s
-    try{penalties = new BFPM(points.length, "/mnt/nvme/phil/bfm.matrix");}catch(IOException e){e.printStackTrace();}
-    GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, points.length); //GLSMoveCost(penalties, 0, points.length);
-    FLS fls = new FLS(gmc);
-    System.out.println("start opt 1");
-    double bestScore = fls.optimise(points, score); // orignal cost (all penalties = 0)
-    double augScore;
+    //try{penalties = new BFPM(points.length, "/mnt/nvme/phil/bfm.matrix");}catch(IOException e){e.printStackTrace();}
+    //GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, points.length); //GLSMoveCost(penalties, 0, points.length);
+    //FLS fls = new FLS(gmc);
+
+    double bestScore = localSearch.optimise(points, score); // original cost (all penalties = 0)
+    double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
-    
-    if(bestScore < score) {
-      DumpPoints.dump(bestPoints, "/home/phil/santa/best_gls.points");
-    }
+
 
     // "cost of a local minimum tour produced by local search
     // (e.g. first local minimum before penalties are applied)"
     // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf
-    gmc.setLamda(a * (bestScore/points.length));
+    //gmc.setLamda(a * (bestScore/points.length));
 
-    double lastScore = 0;
-    double l = System.currentTimeMillis();
-    for(int i = 0; i < 1000000000; i++) {
+    for(int i = 0; i < maxRuns; i++) {
 
-//      if(i % penaltyClear == 0) {
-//        penalties.clear();
-//        numPenalties = 0;
-//        maxPenalty = 0;
-//        for(Point p : points) {
-//          p.setActive(true);
-//        }
-//      } else {
-        penalise(points, penalties);
- //     }
+      penalise(points, penalties);
 
-      augScore = getAugmentedScore(points, penalties, gmc.getLamda());
+      augScore = localSearch.optimise(points, augScore);
 
-      //System.out.println("start opt " + i);
-      augScore = fls.optimise(points, augScore);
-      score = Point.distance(points);
-      if(score != lastScore) {
-        //DumpPoints.dump(points, "/tmp/points_" + i + ".points");
-        lastScore = score;
-      }
+      score = tourDistance.distance(points);
 
-
-      System.out.printf("score = %.4f. aug = %.4f (%d).\n", score, augScore, i);
 
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
         bestScore = score;
 
-        //double lamda = a * (bestScore/points.length);
-        //gmc.setLamda(lamda);
 
-        System.out.printf("best = %.4f (%d) (%.2fs) (penalties = %d max_penalty = %d)\n", bestScore, i, (System.currentTimeMillis()-l)/1000.0, numPenalties, maxPenalty);
-        DumpPoints.dump(bestPoints, "/home/phil/santa/best_gls.points");
-      } //else {
-        //if(i % 10000 == 0 ) fls.mutate(points);
-      //}
+        System.out.printf("best = %.4f (%d)\n", bestScore, i);
+        DumpPoints.dump(bestPoints, output);
+      }
     }
     for(int i = 0; i < points.length; i++) {
       points[i] = bestPoints[i];
@@ -144,14 +126,14 @@ public class GLS implements TSP {
   }
 
   private void penalise(Point[] points, PenaltyMatrix penalties) {
-    ArrayList<Point> maxUtilFeatures = new ArrayList<Point>();
+    ArrayList<Point> maxUtilFeatures = new ArrayList<>();
     // get features (edges) which maximise the utility cost/(penalty+1).
     double maxUtil = 0;
-    for(int i = 0, j = 1; i < points.length; i++, j = (j+1) % points.length) {
+    for(int i = 0, j = 1; i < points.length; i++, j = (j + 1) % points.length) {
       Point from = points[i], to = points[j];
       double distance = from.distance(to);
       int penalty = penalties.getPenalty(from.getId(), to.getId());
-      double utility = distance/(penalty+1);
+      double utility = distance / (penalty + 1);
       if(utility > maxUtil) {
         maxUtilFeatures.clear();
         maxUtilFeatures.add(from);
@@ -162,36 +144,13 @@ public class GLS implements TSP {
         maxUtilFeatures.add(to);
       }
     }
+
     // increase penalty for features which maximise the utility.
-    //System.out.println("penalise " + maxUtilFeatures.size()/2 + " features");
-    for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) { // note/todo: how often is there actually > 1 feature? probably no harm doing one at a time (others will be candidates later.)
-      Point from = maxUtilFeatures.get(i), to = maxUtilFeatures.get(i+1);
-      int penalty = penalties.incPenalty(from.getId(), to.getId());
-      if(penalty > maxPenalty) {
-        maxPenalty = penalty;
-      }
-      if(penalty == 1) {
-        numPenalties++;
-      }
-      //System.out.println("(" + from.getId() + "," + to.getId() + ") = " + penalties.getPenalty(from.getId(), to.getId()));
-      //penalties.incPenalty(to.getId(), from.getId()); // ?
+    for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) {
+      Point from = maxUtilFeatures.get(i), to = maxUtilFeatures.get(i + 1);
+      penalties.incPenalty(from.getId(), to.getId());
       from.setActive(true);
       to.setActive(true);
     }
-  }
-
-  private double getAugmentedScore(Point[] points, PenaltyMatrix penalties, double lamda) {
-    double d = points[points.length-1].distance(points[0]);
-    d += penalties.getPenalty(points[points.length-1].getId(), points[0].getId());
-    for(int i = 1; i < points.length; i++) {
-      final Point pre = points[i-1], cur = points[i];
-      double pre_d = pre.distance(cur);
-      if(i % 10 == 0 && !pre.isPrime()) {
-        pre_d *= 1.1;
-      }
-      d += pre_d;
-      d += lamda * penalties.getPenalty(pre.getId(), cur.getId());
-    }
-    return d;
   }
 }

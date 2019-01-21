@@ -2,7 +2,6 @@ package net.parasec.tsp;
 
 import net.parasec.tsp.impl.*;
 
-import java.io.IOException;
 
 public class TSPSolver {
   public static TSP instance(String solver) {
@@ -14,10 +13,9 @@ public class TSPSolver {
       //GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, 197769); //GLSMoveCost(penalties, 0, points.length);
       //tspSolver = new FLS(gmc);
       tspSolver = new FLS();
-    } else if(solver.equals("mutate_fls")) {
-      tspSolver = new MutateFLS();
     } else if(solver.equals("gls_fls")) {
-      tspSolver = new GLS();
+      //tspSolver = new GLS();
+      tspSolver = null;
     } else {
       String m = solver + " not recognised. try: <fls, mutate_fls, gls_fls>";
       throw new UnsupportedOperationException(m);

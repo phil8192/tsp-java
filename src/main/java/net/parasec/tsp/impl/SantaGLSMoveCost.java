@@ -18,37 +18,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     }
   }
 
-  private double reverseDelta2(Point[] tour, int from, int to) {
-
-	  double curPrime = 0d;
-    for(int i = from + 1; i <= to; i++) {
-      if(i % 10 == 0) {
-       // System.out.println("ii = " + i);
-        Point curPoint = tour[i];
-	      Point prePoint = tour[i - 1];
-	      if(!prePoint.isPrime()) {
-          curPrime += PEN * prePoint.distance(curPoint);
-        }
-      }
-    }
-    //System.out.println("reverse_delta2 curPrime = " + curPrime);
-    reverse(tour, from, to);
-    double newPrime = 0d;
-    for(int i = from + 1; i <= to; i++) {
-      if(i % 10 == 0) {
-        Point curPoint = tour[i];
-	      Point prePoint = tour[i - 1];
-	      if(!prePoint.isPrime()) {
-          newPrime += PEN * prePoint.distance(curPoint);
-        }
-      }
-    }
-    //System.out.println("reverse_delta2 newPrime = " + newPrime);
-    reverse(tour, from, to);
-    return newPrime - curPrime;
-  }
-
-  private double reverseDelta(Point[] tour, int from, int to) {
+  private double reverseDelta(SantaPoint[] tour, int from, int to) {
     // need to reverse a segment in 2-opt.
     // this means a different score for reversed segment: primes will be in different places.
     // (this makes the problem difficult and hard to optimise)
@@ -61,12 +31,12 @@ public class SantaGLSMoveCost extends GLSMoveCost {
 
     while(i <= to) { // up until c (inclusive)
       //System.out.println("i  = " + i);
-      Point prePoint = tour[i - 1]; // pre city
+      SantaPoint prePoint = tour[i - 1]; // pre city
       if(!prePoint.isPrime()) {
         //int prev = (i > 0 ? i : tour.length) - 1;
         curPrime += PEN * prePoint.distance(tour[i]);
       }
-      Point revPrePoint = tour[j + 1]; // previous city in this place when reversed
+      SantaPoint revPrePoint = tour[j + 1]; // previous city in this place when reversed
       if(!revPrePoint.isPrime()) {
         //int next = (j < tour.length - 1 ? j + 1 : 0);
         newPrime += PEN * tour[j].distance(revPrePoint); // previous will be next from revPoint.
@@ -79,9 +49,9 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     return newPrime - curPrime;
   }
 
-  public double moveCost(Point a, Point b, Point c, Point d,
+  public double moveCost(SantaPoint a, SantaPoint b, SantaPoint c, SantaPoint d,
                          int a_idx, int b_idx, int c_idx, int d_idx,
-                         Point[] tour) {
+                         SantaPoint[] tour) {
 
     double _ab = a._distance(b), _cd = c._distance(d); // current
     double _ac = a._distance(c), _bd = b._distance(d); // new
@@ -173,22 +143,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double revPrime = reverseDelta(tour, from, to);
 
     double deltaPrime = (newPrime - curPrime) + revPrime;
-
-    if(deltaD + deltaPrime < 0) {
-      double pre = Point.distance(tour, from, to);
-      reverse(tour, from, to);
-      double rev = Point.distance(tour, from, to);
-      double verifyDiff = rev - pre;
-      reverse(tour, from, to);
-
-      int i = from + (10 - (from % 10)); // start (next 10th from b_idx)
-      int j = to - (i - from);
-      reverseDelta2(tour, from, to);
-      System.out.println("from = " + from + " to = " + to + " i = " + i + " j = " + j + " deltaD = " + deltaD +
-          " newPrime = " + newPrime + " curPrime = " + curPrime + " revPrime = " + revPrime + " pre = " + pre +
-          " rev = " + rev + " verify_diff = " + verifyDiff + " a_idx = " + a_idx + " b_idx = " + b_idx + " c_idx = " +
-          c_idx + " d_idx = " + d_idx);
-    }
 
     return deltaD + deltaP + deltaPrime;
 

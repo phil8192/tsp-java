@@ -7,6 +7,7 @@ public class SantaPoint extends Point {
   public SantaPoint(int id, double x, double y) {
     super(id, x, y, false);
     this.prime = _isPrime(id);
+    setActive(false);
   }
 
   // copy constructor
@@ -17,8 +18,12 @@ public class SantaPoint extends Point {
   }
 
   private boolean _isPrime(int n) {
-    if(n == 0 || n == 1 || n % 2 == 0) return false;
-    if(n == 2) return true;
+    if(n == 0 || n == 1 || n % 2 == 0) {
+      return false;
+    }
+    if(n == 2) {
+      return true;
+    }
     for(int i = 3, lim = ((int) Math.round(Math.sqrt(n))) + 1; i < lim; i += 2) {
       if(n % i == 0) {
         return false;
@@ -32,7 +37,6 @@ public class SantaPoint extends Point {
   }
 
   public Point copy() {
-    return new SantaPoint(getId(), getX(), getY()), isPrime();
+    return new SantaPoint(getId(), getX(), getY(), isPrime());
   }
-
 }
