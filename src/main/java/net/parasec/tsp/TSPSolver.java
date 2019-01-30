@@ -4,23 +4,25 @@ import net.parasec.tsp.impl.*;
 
 
 public class TSPSolver {
-  public static TSP instance(String solver) {
+  public static TSP instance(String solver, String intermediateOutput) {
     if(solver == null) throw new IllegalArgumentException();
     TSP tspSolver;
-    if(solver.equals("fls")) {
-      //PenaltyMatrix penalties=null;
-      //try{penalties = new BFPM(197769, "/mnt/nvme/phil/bfm3.matrix");}catch(IOException e){e.printStackTrace();}
-      //GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, 197769); //GLSMoveCost(penalties, 0, points.length);
-      //tspSolver = new FLS(gmc);
-      tspSolver = new FLS();
-    } else if(solver.equals("gls_fls")) {
-      //tspSolver = new GLS();
-      tspSolver = null;
-    } else {
-      String m = solver + " not recognised. try: <fls, mutate_fls, gls_fls>";
-      throw new UnsupportedOperationException(m);
+    switch(solver) {
+      case "fls":
+        tspSolver = new FLS();
+        break;
+      case "gls_fls":
+        // TourDistance tourDistance, TSP localSearch, PenaltyMatrix penalties, int maxRuns, String output) {
+        TourDistance tourDistance = new DefaultDistance();
+        TSP localSearch = new FLS();
+        PenaltyMatrix penaltyMatrix = new ArrayPenaltyMatrix(numCites);
+
+        tspSolver = new GLS(tourDistance, localSearch, penaltyMatrix, intermediateOutput);
+        break;
+      default:
+        String m = solver + " not recognised. try: <fls, mutate_fls, gls_fls>";
+        throw new UnsupportedOperationException(m);
     }
-    System.out.println("using " + solver + " optimiser.");
     return tspSolver;
   }
 }
