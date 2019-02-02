@@ -16,15 +16,7 @@ public class GLSMoveCost implements TwoOptMoveCost {
     this.numCities = numCities;
   }
 
-  public double getLamda() {
-    return lamda;
-  }
-
-  public void setLamda(double lamda) {
-    this.lamda = lamda;
-  }
-
-  protected double getPenalty(Point from, Point to) {
+  public double getPenalty(Point from, Point to) {
     return penalties.getPenalty(from.getId(), to.getId());
   }
 

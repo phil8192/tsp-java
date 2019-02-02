@@ -11,11 +11,11 @@ public final class DumpPoints {
       try {
         os = new BufferedOutputStream(new FileOutputStream(new File(file)));
         for(int i = 0, len = points.length; i < len; i++)
-        os.write((points[i] + "\n").getBytes());
+          os.write((points[i] + "\n").getBytes());
         os.write((points[0] + "\n").getBytes());
       } finally {
         if(os != null)
-        os.close();
+          os.close();
       }
     } catch(final IOException e) {
       System.err.println(e);

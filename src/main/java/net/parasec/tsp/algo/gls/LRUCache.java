@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 
 
-public class LRUCache extends LinkedHashMap<Long,Short> {
+public class LRUCache extends LinkedHashMap<Long, Short> {
   private final static int INITIAL_CAP = 1024;
   private final static float LOAD_FACTOR = 0.75f;
   private final int max;

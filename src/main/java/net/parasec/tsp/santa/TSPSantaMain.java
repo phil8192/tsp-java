@@ -4,8 +4,6 @@ import net.parasec.tsp.algo.fls.FLS;
 import net.parasec.tsp.io.PointsReader;
 import net.parasec.tsp.algo.TSP;
 import net.parasec.tsp.cost.GLSMoveCost;
-import net.parasec.tsp.cost.SantaGLSMoveCost;
-import net.parasec.tsp.distance.SantaDistance;
 import net.parasec.tsp.distance.TourDistance;
 import net.parasec.tsp.algo.gls.BFPM;
 import net.parasec.tsp.algo.gls.GLS;

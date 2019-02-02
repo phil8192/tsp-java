@@ -1,6 +1,6 @@
-package net.parasec.tsp.distance;
+package net.parasec.tsp.santa;
 
-import net.parasec.tsp.santa.SantaPoint;
+import net.parasec.tsp.distance.TourDistance;
 
 public class SantaDistance implements TourDistance<SantaPoint> {
 

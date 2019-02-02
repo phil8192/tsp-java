@@ -15,14 +15,15 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 /*
-* reads in tsp files in the tsplib format here:
-* http://www.math.uwaterloo.ca/tsp/data/
-*/
+ * reads in tsp files in the tsplib format here:
+ * http://www.math.uwaterloo.ca/tsp/data/
+ */
 public final class TSPReader {
   private static final String REGX
-  = "^([0-9]+)\\s+([0-9]+\\.[0-9]+|[0-9]+)\\s+([0-9]+\\.[0-9]+|[0-9]+)$";
+      = "^([0-9]+)\\s+([0-9]+\\.[0-9]+|[0-9]+)\\s+([0-9]+\\.[0-9]+|[0-9]+)$";
   private static final String CHARSET = "US-ASCII";
   private static final String NL = System.getProperty("line.separator");
+
   public static final Point[] read(final String tspFile) {
     try {
       FileInputStream fis = null;

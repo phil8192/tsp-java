@@ -22,7 +22,6 @@ public class Point {
     this.active = active;
   }
 
-
   public int getId() {
     return id;
   }
@@ -34,28 +33,6 @@ public class Point {
   public double getY() {
     return y;
   }
-
-  /*
-  public static double distance(final Point[] points) {
-    final int len = points.length;
-    double d = points[len-1].distance(points[0]);
-    d += distance(points, 0, len - 1);
-    return d;
-  }
-
-  public static double distance(Point[] points, int from, int to) {
-    double d = 0d;
-    for(int i = from+1; i <= to; i++) {
-      final Point pre = points[i-1], cur = points[i];
-      double distance = pre.distance(cur);
-      if(i % 10 == 0 && !pre.isPrime()) {
-        distance *= 1.1;
-      }
-      d += distance;
-    }
-    return d;
-  }
-  */
 
   public double distance(final Point to) {
     return Maths.sqrt(_distance(to));

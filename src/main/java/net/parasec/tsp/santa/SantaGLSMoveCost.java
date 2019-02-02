@@ -1,26 +1,17 @@
-package net.parasec.tsp.cost;
+package net.parasec.tsp.santa;
 
+import net.parasec.tsp.cost.GLSMoveCost;
 import net.parasec.tsp.util.Maths;
 import net.parasec.tsp.algo.gls.PenaltyMatrix;
-import net.parasec.tsp.algo.Point;
-import net.parasec.tsp.santa.SantaPoint;
 
 public class SantaGLSMoveCost extends GLSMoveCost {
 
 
-	private static final double PEN = 0.1;
+  private static final double PEN = 0.1;
 
 
   public SantaGLSMoveCost(final PenaltyMatrix penalties, double lamda, int numCities) {
     super(penalties, lamda, numCities);
-  }
-
-  private void reverse(final Point[] x, final int from, final int to) {
-    for(int i = from, j = to; i < j; i++, j--) {
-      final Point tmp = x[i];
-      x[i] = x[j];
-      x[j] = tmp;
-    }
   }
 
   private double reverseDelta(SantaPoint[] tour, int from, int to) {
@@ -30,9 +21,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double curPrime = 0, newPrime = 0;
     int i = from + (10 - (from % 10)); // start (next 10th from b_idx)
     int j = to - (i - from); // opposite side
-    //System.out.println("i = " + i + " j = " + j);
-
-
 
     while(i <= to) { // up until c (inclusive)
       //System.out.println("i  = " + i);
@@ -49,8 +37,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
       i += 10;
       j -= 10;
     }
-    //System.out.println("reverse_delta curPrime = " + curPrime);
-    //System.out.println("reverse_delta newPrime = " + newPrime);
     return newPrime - curPrime;
   }
 
@@ -61,10 +47,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double _ab = a._distance(b), _cd = c._distance(d); // current
     double _ac = a._distance(c), _bd = b._distance(d); // new
 
-
-
-
-
     // triangle of inequality: at least 1 edge will be shorter.
     // if both will be longer, there will be no improvement.
     // return a positive delta to indicate no improvement.
@@ -72,7 +54,6 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     //if(((lamda*ab_pen) + _ab) < ((lamda*ac_pen) + _ac) && ((lamda*cd_pen) + _cd) < ((lamda*bd_pen) + _bd)) return 1;
     if(_ab < _ac && _cd < _bd) return 1;
 
-    //System.out.println(new_penalty + " " +cur_penalty);
     // distance delta: original edges (ab) (cd), candidate edges (ac) (bd).
     //double d_ab = a.distance(b), d_cd = c.distance(d);
     //double d_ac = a.distance(c), d_bd = b.distance(d);
@@ -80,18 +61,14 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double d_ac = Maths.sqrt(_ac), d_bd = Maths.sqrt(_bd);
     double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
 
-
     double ab_pen = getPenalty(a, b), cd_pen = getPenalty(c, d);
     double ac_pen = getPenalty(a, c), bd_pen = getPenalty(b, d);
     double cur_penalty = ab_pen + cd_pen;
     double new_penalty = ac_pen + bd_pen;
     double deltaP = lamda * (new_penalty - cur_penalty);
 
-
-
     // prime delta
     double curPrime = 0, newPrime = 0;
-
 
     // FLS currently reverses part of tour that does not need to be wrapped around.
     // todo: will need to select side which minimises prime penalty.
@@ -110,7 +87,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
           curPrime += PEN * d_ab; // current (A -> B)
           newPrime += PEN * d_ac; // new     (A -> C)
 
-	}
+        }
       }
       if(d_idx != 0 && d_idx % 10 == 0) {
         // D stays in place.
