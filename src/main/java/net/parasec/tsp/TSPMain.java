@@ -1,7 +1,5 @@
 package net.parasec.tsp;
 
-import net.parasec.tsp.impl.*;
-
 public class TSPMain {
 
   public static void main(String[] args) {

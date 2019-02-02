@@ -1,7 +1,5 @@
 package net.parasec.tsp;
 
-import net.parasec.tsp.impl.*;
-
 import java.io.IOException;
 
 // for https://www.kaggle.com/c/traveling-santa-2018-prime-paths

@@ -1,8 +1,4 @@
-package net.parasec.tsp.impl;
-
-import net.parasec.tsp.DumpPoints;
-import net.parasec.tsp.TSP;
-import net.parasec.tsp.TourDistance;
+package net.parasec.tsp;
 
 import java.util.ArrayList;
 

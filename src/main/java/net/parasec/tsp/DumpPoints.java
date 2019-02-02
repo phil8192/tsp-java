@@ -1,6 +1,5 @@
 package net.parasec.tsp;
 
-import net.parasec.tsp.impl.Point;
 import java.io.*;
 
 public final class DumpPoints {

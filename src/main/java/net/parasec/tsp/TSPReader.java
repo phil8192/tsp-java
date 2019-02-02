@@ -1,6 +1,5 @@
 package net.parasec.tsp;
 
-import net.parasec.tsp.impl.Point;
 import java.io.*;
 import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;

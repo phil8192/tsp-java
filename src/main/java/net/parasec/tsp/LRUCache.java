@@ -1,4 +1,4 @@
-package net.parasec.tsp.impl;
+package net.parasec.tsp;
 
 import java.util.Map;
 import java.util.LinkedHashMap;

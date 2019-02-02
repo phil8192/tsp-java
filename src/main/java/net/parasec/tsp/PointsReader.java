@@ -1,7 +1,5 @@
 package net.parasec.tsp;
 
-import net.parasec.tsp.impl.Point;
-
 import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.CharBuffer;

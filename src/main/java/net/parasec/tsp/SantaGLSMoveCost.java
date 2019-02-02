@@ -1,4 +1,4 @@
-package net.parasec.tsp.impl;
+package net.parasec.tsp;
 
 public class SantaGLSMoveCost extends GLSMoveCost {
 
