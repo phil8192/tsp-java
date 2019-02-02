@@ -1,4 +1,4 @@
-package net.parasec.tsp;
+package net.parasec.tsp.algo.gls;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

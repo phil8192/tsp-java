@@ -1,4 +1,9 @@
-package net.parasec.tsp;
+package net.parasec.tsp.algo.fls;
+
+import net.parasec.tsp.algo.Point;
+import net.parasec.tsp.algo.TSP;
+import net.parasec.tsp.cost.BasicTwoOptMoveCost;
+import net.parasec.tsp.cost.TwoOptMoveCost;
 
 // Fast Local Search, 2-Opt "Dont look bits"
 public class FLS implements TSP {

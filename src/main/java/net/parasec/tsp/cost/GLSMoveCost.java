@@ -1,4 +1,7 @@
-package net.parasec.tsp;
+package net.parasec.tsp.cost;
+
+import net.parasec.tsp.algo.gls.PenaltyMatrix;
+import net.parasec.tsp.algo.Point;
 
 public class GLSMoveCost implements TwoOptMoveCost {
 

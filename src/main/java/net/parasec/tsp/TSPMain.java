@@ -1,5 +1,18 @@
 package net.parasec.tsp;
 
+import net.parasec.tsp.algo.Point;
+import net.parasec.tsp.algo.TSP;
+import net.parasec.tsp.cost.BasicTwoOptMoveCost;
+import net.parasec.tsp.cost.TwoOptMoveCost;
+import net.parasec.tsp.distance.DefaultDistance;
+import net.parasec.tsp.distance.TourDistance;
+import net.parasec.tsp.algo.gls.ArrayPenaltyMatrix;
+import net.parasec.tsp.algo.gls.GLS;
+import net.parasec.tsp.algo.gls.PenaltyMatrix;
+import net.parasec.tsp.algo.fls.FLS;
+import net.parasec.tsp.io.DumpPoints;
+import net.parasec.tsp.io.PointsReader;
+
 public class TSPMain {
 
   public static void main(String[] args) {

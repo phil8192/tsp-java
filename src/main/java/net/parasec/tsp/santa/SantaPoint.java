@@ -1,4 +1,6 @@
-package net.parasec.tsp;
+package net.parasec.tsp.santa;
+
+import net.parasec.tsp.algo.Point;
 
 public class SantaPoint extends Point {
 

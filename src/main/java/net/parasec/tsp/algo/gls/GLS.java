@@ -1,4 +1,9 @@
-package net.parasec.tsp;
+package net.parasec.tsp.algo.gls;
+
+import net.parasec.tsp.io.DumpPoints;
+import net.parasec.tsp.algo.Point;
+import net.parasec.tsp.algo.TSP;
+import net.parasec.tsp.distance.TourDistance;
 
 import java.util.ArrayList;
 

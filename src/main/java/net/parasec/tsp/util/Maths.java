@@ -1,4 +1,4 @@
-package net.parasec.tsp;
+package net.parasec.tsp.util;
 
 /**
 * centralised place for possible micro-optimisations.

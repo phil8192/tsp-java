@@ -1,4 +1,9 @@
-package net.parasec.tsp;
+package net.parasec.tsp.cost;
+
+import net.parasec.tsp.util.Maths;
+import net.parasec.tsp.algo.gls.PenaltyMatrix;
+import net.parasec.tsp.algo.Point;
+import net.parasec.tsp.santa.SantaPoint;
 
 public class SantaGLSMoveCost extends GLSMoveCost {
 

@@ -1,4 +1,6 @@
-package net.parasec.tsp;
+package net.parasec.tsp.algo;
+
+import net.parasec.tsp.util.Maths;
 
 public class Point {
 

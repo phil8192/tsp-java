@@ -1,4 +1,4 @@
-package net.parasec.tsp;
+package net.parasec.tsp.algo.gls;
 
 public class ArrayPenaltyMatrix implements PenaltyMatrix {
 

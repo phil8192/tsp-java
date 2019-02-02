@@ -1,4 +1,6 @@
-package net.parasec.tsp;
+package net.parasec.tsp.distance;
+
+import net.parasec.tsp.algo.Point;
 
 public class DefaultDistance implements TourDistance<Point> {
 

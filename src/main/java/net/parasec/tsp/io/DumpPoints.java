@@ -1,4 +1,6 @@
-package net.parasec.tsp;
+package net.parasec.tsp.io;
+
+import net.parasec.tsp.algo.Point;
 
 import java.io.*;
 
