@@ -9,6 +9,10 @@ public class TSPSantaMain {
 
   public static void main(String[] args) {
 
+    String penaltyMatrixFile = args[0]; // /mnt/nvme/phil/bfm.matrix
+    int maxRuns = Integer.parseInt(args[1]);
+    String output = args[1];
+
     PointsReader.PointParser<SantaPoint> pointParser = new PointsReader.PointParser<SantaPoint>() {
       @Override
       public SantaPoint parse(String[] line) {
@@ -23,7 +27,7 @@ public class TSPSantaMain {
 
     PenaltyMatrix penalties = null;
     try {
-      penalties = new BFPM(points.length, "/mnt/nvme/phil/bfm.matrix");
+      penalties = new BFPM(points.length, penaltyMatrixFile);
     }catch(IOException e){
       e.printStackTrace();
     }
@@ -32,7 +36,7 @@ public class TSPSantaMain {
     TSP fls = new FLS(gmc);
 
     TourDistance<SantaPoint> tourDistance = new SantaDistance();
-    TSP gls = new GLS(tourDistance, fls, penalties, 1000000,"/tmp/best_gls.points");
+    TSP gls = new GLS(tourDistance, fls, penalties, maxRuns, output);
 
     double score = tourDistance.distance(points);
     gls.optimise(points, score);
