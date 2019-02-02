@@ -8,7 +8,6 @@ import net.parasec.tsp.cost.TwoOptMoveCost;
 // Fast Local Search, 2-Opt "Dont look bits"
 public class FLS implements TSP {
 
-  private final java.util.SplittableRandom prng = new java.util.SplittableRandom(); // todo: MutantFLS extends FLS
   private final TwoOptMoveCost twoOptMoveCost;
 
 
@@ -63,17 +62,6 @@ public class FLS implements TSP {
                         final Point c, final Point d) {
     a.setActive(true); b.setActive(true);
     c.setActive(true); d.setActive(true);
-  }
-
-  public void mutate(Point[] points) { // todo: MutantFLS extends FLS
-    // 0 1 2 3 4 5 [6 7] [8 9]
-    int randomCityA = prng.nextInt(points.length - 3);
-    int randomCityB = randomCityA + 2 + prng.nextInt(points.length - randomCityA - 3);
-    reverse(points, randomCityA + 1, randomCityB);
-    points[randomCityA].setActive(true);
-    points[randomCityA + 1].setActive(true);
-    points[randomCityB].setActive(true);
-    points[randomCityB + 1].setActive(true);
   }
 
   /**
