@@ -27,6 +27,10 @@ public class GLS implements TSP {
 
   public double optimise(Point[] points, double score) {
 
+    // alpha experiments with and without lru cache:
+    // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf
+    // suggests between 0.125 and 0.5 for 2-opt. (higher values = more aggressive)
+
     // rat783 optimal = 8806.
 
     // rat783
@@ -43,10 +47,8 @@ public class GLS implements TSP {
     //    0.3: best = 8892.9067 (151628) (54.70s) (penalties = 75256 max_penalty = 7)
     //      1: best = 9154.7613 (109239) (53.25s) (penalties = 98417 max_penalty = 3)
 
-
     // without triangle
     // best = 8844.1745 (194537) (126.22s) (penalties = 10881 max_penalty = 73)
-
 
     // with triangle
     // best = 8844.3483 (455303) (50.73s) (penalties = 17500 max_penalty = 101)
@@ -56,7 +58,6 @@ public class GLS implements TSP {
     // best = 8843.0068 (2970446) (364.77s) (penalties = 52361 max_penalty = 225)
     // best = 8842.9950 (2970474) (364.77s) (penalties = 52361 max_penalty = 225)
 
-
     // best = 8842.9950 (1127653) (118.21s) (penalties = 19953 max_penalty = 220)   0.025
     // best = 8842.9950 (2970474) (360.63s) (penalties = 52361 max_penalty = 225) 0.05
     // best = 8842.9950 (1216367) (148.81s) (penalties = 39262 max_penalty = 119) 0.075
@@ -65,8 +66,7 @@ public class GLS implements TSP {
 
     // with triangle + deltaP >= 0
     // best = 8844.1745 (194537) (127.37s) (penalties = 10881 max_penalty = 73)
-    // same as without triangle: cur_penalty will always be >= 1 during GLS (dont look bits set to 1)
-
+    // same as without triangle: cur_penalty will always be >= 1 during GLS (don't look bits set to 1)
 
     // edge penalties..
     // best = 8844.0546 (853271) (532.46s) (penalties = 25045 max_penalty = 132)
@@ -81,21 +81,11 @@ public class GLS implements TSP {
     // best = 8845.8809 (175955) (84.06s) (penalties = 31312 max_penalty = 21)
 
     // best = 8845.8809 (175955) (183.47s) (penalties = 31312 max_penalty = 21)
-    //final double a = 0.05; //0.5; // https://pdfs.semanticscholar.org/bbd8/1fa7eb9acaef4115c92c4a40eb4040ad036c.pdf: suggests betwen 0.125 and 0.5 for 2-opt. (higher values = more agressive)
-    //final double a = 0.025;
 
-    //PenaltyMatrix penalties=null;
-    // 175955 = 55.61s
-    //penalties = new ArrayPenaltyMatrix(points.length);
-    // 175955 = 89.43s
-    //try{penalties = new BFPM(points.length, "/mnt/nvme/phil/bfm.matrix");}catch(IOException e){e.printStackTrace();}
-    //GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, points.length); //GLSMoveCost(penalties, 0, points.length);
-    //FLS fls = new FLS(gmc);
 
     double bestScore = localSearch.optimise(points, score); // original cost (all penalties = 0)
     double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
-
 
     // "cost of a local minimum tour produced by local search
     // (e.g. first local minimum before penalties are applied)"
@@ -103,22 +93,17 @@ public class GLS implements TSP {
     //gmc.setLamda(a * (bestScore/points.length));
 
     for(int i = 0; i < maxRuns; i++) {
-
       penalise(points, penalties);
-
       augScore = localSearch.optimise(points, augScore);
-
       score = tourDistance.distance(points);
-
 
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
         bestScore = score;
-
-
         System.out.printf("best = %.4f (%d)\n", bestScore, i);
         DumpPoints.dump(bestPoints, output);
       }
+
     }
     for(int i = 0; i < points.length; i++) {
       points[i] = bestPoints[i];
