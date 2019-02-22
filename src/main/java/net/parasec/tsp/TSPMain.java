@@ -2,7 +2,9 @@ package net.parasec.tsp;
 
 import net.parasec.tsp.algo.Point;
 import net.parasec.tsp.algo.TSP;
+import net.parasec.tsp.algo.gls.BFPM;
 import net.parasec.tsp.cost.BasicTwoOptMoveCost;
+import net.parasec.tsp.cost.GLSMoveCost;
 import net.parasec.tsp.cost.TwoOptMoveCost;
 import net.parasec.tsp.distance.DefaultDistance;
 import net.parasec.tsp.distance.TourDistance;
@@ -13,9 +15,11 @@ import net.parasec.tsp.algo.fls.FLS;
 import net.parasec.tsp.io.DumpPoints;
 import net.parasec.tsp.io.PointsReader;
 
+import java.io.IOException;
+
 public class TSPMain {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
 
     String input = args[0];
     String output = args[1];
@@ -36,17 +40,28 @@ public class TSPMain {
     TourDistance<Point> tourDistance = new DefaultDistance();
     double initialScore = tourDistance.distance(points);
 
-    TwoOptMoveCost twoOptMoveCost = new BasicTwoOptMoveCost();
-    TSP tsp = new FLS(twoOptMoveCost);
+    TSP fls = new FLS(new BasicTwoOptMoveCost());
+    double newScore = fls.optimise(points, initialScore);
+    System.out.printf("FLS original tour length = %.2f new tour length = %.2f\n", initialScore, newScore);
 
     if(algo.equals("gls_fls")) {
+      if(args.length < 4) {
+        System.err.println("gls_fls requires a <max_runs> parameter.");
+        System.exit(0);
+      }
       int maxRuns = Integer.parseInt(args[3]);
       PenaltyMatrix penaltyMatrix = new ArrayPenaltyMatrix(points.length);
-      tsp = new GLS(tourDistance, tsp, penaltyMatrix, maxRuns, output);
+      double alpha = 0.05;
+      double lambda = alpha * (newScore / points.length);
+      fls = new FLS(new GLSMoveCost(penaltyMatrix, lambda, points.length));
+      TSP gls = new GLS(tourDistance, fls, penaltyMatrix, maxRuns, output);
+      double glsScore = gls.optimise(points, newScore);
+      System.out.printf("GLS original tour length = %.2f new tour length = %.2f\n", newScore, glsScore);
     }
 
-    double newScore = tsp.optimise(points, initialScore);
 
     DumpPoints.dump(points, output);
+
+
   }
 }
