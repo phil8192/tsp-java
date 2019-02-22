@@ -2,6 +2,7 @@ package net.parasec.tsp.cost;
 
 import net.parasec.tsp.algo.gls.PenaltyMatrix;
 import net.parasec.tsp.algo.Point;
+import net.parasec.tsp.util.Maths;
 
 public class GLSMoveCost implements TwoOptMoveCost {
 
@@ -24,16 +25,22 @@ public class GLSMoveCost implements TwoOptMoveCost {
                          int a_idx, int b_idx, int c_idx, int d_idx,
                          Point[] tour) {
 
-    // distance delta: original edges (ab) (cd), candidate edges (ac) (bd).
-    double d_ab = a.distance(b), d_cd = c.distance(d);
-    double d_ac = a.distance(c), d_bd = b.distance(d);
-    double deltaD = (d_ac+d_bd) - (d_ab+d_cd);
+    double _ab = a._distance(b), _cd = c._distance(d); // current
+    double _ac = a._distance(c), _bd = b._distance(d); // new
 
-    // penalty delta
-    double p_ab = getPenalty(a, b), p_cd = getPenalty(c, d);
-    double p_ac = getPenalty(a, c), p_bd = getPenalty(b, d);
-    double deltaP = lamda * ((p_ac+p_bd) - (p_ab+p_cd));
+    if(_ab < _ac && _cd < _bd) return 1;
 
-    return deltaD+deltaP;
+    double d_ab = Maths.sqrt(_ab), d_cd = Maths.sqrt(_cd);
+    double d_ac = Maths.sqrt(_ac), d_bd = Maths.sqrt(_bd);
+    double deltaD = (d_ac + d_bd) - (d_ab + d_cd);
+
+    double ab_pen = getPenalty(a, b), cd_pen = getPenalty(c, d);
+    double ac_pen = getPenalty(a, c), bd_pen = getPenalty(b, d);
+    double cur_penalty = ab_pen + cd_pen;
+    double new_penalty = ac_pen + bd_pen;
+    double deltaP = lamda * (new_penalty - cur_penalty);
+
+    return deltaD + deltaP;
+
   }
 }
