@@ -35,11 +35,11 @@ public class TSPSantaMain {
     PenaltyMatrix penalties = null;
     try {
       penalties = new BFPM(points.length, penaltyMatrixFile);
-    }catch(IOException e){
+    } catch(IOException e) {
       e.printStackTrace();
     }
 
-    GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0, points.length);
+    GLSMoveCost gmc = new SantaGLSMoveCost(penalties, 0);
     TSP fls = new FLS(gmc);
 
     TourDistance<SantaPoint> tourDistance = new SantaDistance();

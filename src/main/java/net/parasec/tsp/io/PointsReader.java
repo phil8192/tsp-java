@@ -27,7 +27,7 @@ public class PointsReader<E extends Point> {
     E parse(String[] line);
   }
 
-  public E[] read(final String tspFile, PointParser<E> pointParser) {
+  public E[] read(String tspFile, PointParser<E> pointParser) {
     try {
       FileInputStream fis = null;
       FileChannel fc = null;
@@ -35,16 +35,16 @@ public class PointsReader<E extends Point> {
       try {
         fis = new FileInputStream(tspFile);
         fc = fis.getChannel();
-        final MappedByteBuffer byteBuffer
+        MappedByteBuffer byteBuffer
             = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-        final Charset charset = Charset.forName(CHARSET);
-        final CharsetDecoder decoder = charset.newDecoder();
-        final CharBuffer charBuffer = decoder.decode(byteBuffer);
-        final List<E> points = new ArrayList<>();
+        Charset charset = Charset.forName(CHARSET);
+        CharsetDecoder decoder = charset.newDecoder();
+        CharBuffer charBuffer = decoder.decode(byteBuffer);
+        List<E> points = new ArrayList<>();
         scanner = new Scanner(charBuffer).useDelimiter(NL);
         while(scanner.hasNext()) {
-          final String line = scanner.next();
-          final String[] sline = line.split("\\s");
+          String line = scanner.next();
+          String[] sline = line.split("\\s");
 
           E point = pointParser.parse(sline);
           points.add(point);
@@ -62,7 +62,7 @@ public class PointsReader<E extends Point> {
           fis.close();
         }
       }
-    } catch(final IOException e) {
+    } catch(IOException e) {
       System.err.println(e);
     }
     return null;

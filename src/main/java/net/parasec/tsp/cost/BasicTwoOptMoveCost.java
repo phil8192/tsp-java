@@ -11,11 +11,7 @@ public class BasicTwoOptMoveCost implements TwoOptMoveCost {
    * returns the delta of a 2-Opt move. a negative delta indicates that
    * performing this 2-Opt will result in a shorter tour, and a positive delta
    * indicates that this 2-Opt will result in a longer tour.
-   * <p>
-   * this function is the main hotspot in the optimisation. it is not feasible
-   * to pre-compute a matrix (a lookup table) for a tour with N cities, since
-   * this will be O(N^2) and the most compact representation will be (N^2-N)/2.
-   * <p>
+   *
    * good optimisation: most of the time the algorithm is evaluating bad moves,
    * in the obvious case where 2 edge exchanges would result in 2 longer
    * edges, avoid 4 square root operations by comparing squares. this results
@@ -36,7 +32,7 @@ public class BasicTwoOptMoveCost implements TwoOptMoveCost {
 
     // otherwise must calculate distance delta.
     return (Maths.sqrt(_ac) + Maths.sqrt(_bd)) -
-        (Maths.sqrt(_ab) + Maths.sqrt(_cd));
+           (Maths.sqrt(_ab) + Maths.sqrt(_cd));
   }
 
 }

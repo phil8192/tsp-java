@@ -10,8 +10,8 @@ public class SantaGLSMoveCost extends GLSMoveCost {
   private static final double PEN = 0.1;
 
 
-  public SantaGLSMoveCost(final PenaltyMatrix penalties, double lamda, int numCities) {
-    super(penalties, lamda, numCities);
+  public SantaGLSMoveCost(final PenaltyMatrix penalties, double lambda) {
+    super(penalties, lambda);
   }
 
   private double reverseDelta(SantaPoint[] tour, int from, int to) {
@@ -65,7 +65,7 @@ public class SantaGLSMoveCost extends GLSMoveCost {
     double ac_pen = getPenalty(a, c), bd_pen = getPenalty(b, d);
     double cur_penalty = ab_pen + cd_pen;
     double new_penalty = ac_pen + bd_pen;
-    double deltaP = lamda * (new_penalty - cur_penalty);
+    double deltaP = lambda * (new_penalty - cur_penalty);
 
     // prime delta
     double curPrime = 0, newPrime = 0;

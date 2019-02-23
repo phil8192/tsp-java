@@ -49,3 +49,8 @@ notes
   a massive performance gain. tried an LRU cache for distances, inlining lots 
   of code, precomputing sqrts: with little improvement.
   
+
+
+
+## best known solutions
+https://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/STSP.html

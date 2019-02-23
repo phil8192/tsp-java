@@ -6,18 +6,16 @@ import net.parasec.tsp.util.Maths;
 
 public class GLSMoveCost implements TwoOptMoveCost {
 
-  protected final PenaltyMatrix penalties;
-  protected double lamda;
-  protected int numCities;
+  private final PenaltyMatrix penalties;
+  protected double lambda;
 
 
-  public GLSMoveCost(final PenaltyMatrix penalties, double lamda, int numCities) {
+  public GLSMoveCost(final PenaltyMatrix penalties, double lambda) {
     this.penalties = penalties;
-    this.lamda = lamda;
-    this.numCities = numCities;
+    this.lambda = lambda;
   }
 
-  public double getPenalty(Point from, Point to) {
+  protected double getPenalty(Point from, Point to) {
     return penalties.getPenalty(from.getId(), to.getId());
   }
 
@@ -38,9 +36,8 @@ public class GLSMoveCost implements TwoOptMoveCost {
     double ac_pen = getPenalty(a, c), bd_pen = getPenalty(b, d);
     double cur_penalty = ab_pen + cd_pen;
     double new_penalty = ac_pen + bd_pen;
-    double deltaP = lamda * (new_penalty - cur_penalty);
+    double deltaP = lambda * (new_penalty - cur_penalty);
 
     return deltaD + deltaP;
-
   }
 }
