@@ -3,7 +3,7 @@ package net.parasec.tsp.cost;
 import net.parasec.tsp.util.Maths;
 import net.parasec.tsp.algo.Point;
 
-public class BasicTwoOptMoveCost implements TwoOptMoveCost {
+public class BasicTwoOptMoveCost implements TwoOptMoveCost<Point> {
 
   /**
    * cost of a 2-Opt.

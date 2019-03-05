@@ -2,8 +2,8 @@ package net.parasec.tsp.cost;
 
 import net.parasec.tsp.algo.Point;
 
-public interface TwoOptMoveCost {
-  double moveCost(Point a, Point b, Point c, Point d,
+public interface TwoOptMoveCost<E extends Point> {
+  double moveCost(E a, E b, E c, E d,
                   int a_idx, int b_idx, int c_idx, int d_idx,
-                  Point[] tour);
+                  E[] tour);
 }

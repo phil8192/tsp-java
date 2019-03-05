@@ -4,10 +4,10 @@ import net.parasec.tsp.algo.gls.PenaltyMatrix;
 import net.parasec.tsp.algo.Point;
 import net.parasec.tsp.util.Maths;
 
-public class GLSMoveCost implements TwoOptMoveCost {
+public class GLSMoveCost implements TwoOptMoveCost<Point> {
 
   private final PenaltyMatrix penalties;
-  protected double lambda;
+  private double lambda;
 
 
   public GLSMoveCost(final PenaltyMatrix penalties, double lambda) {
@@ -15,7 +15,7 @@ public class GLSMoveCost implements TwoOptMoveCost {
     this.lambda = lambda;
   }
 
-  protected double getPenalty(Point from, Point to) {
+  private double getPenalty(Point from, Point to) {
     return penalties.getPenalty(from.getId(), to.getId());
   }
 

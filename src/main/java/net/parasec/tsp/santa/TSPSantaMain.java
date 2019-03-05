@@ -3,7 +3,6 @@ package net.parasec.tsp.santa;
 import net.parasec.tsp.algo.fls.FLS;
 import net.parasec.tsp.io.PointsReader;
 import net.parasec.tsp.algo.TSP;
-import net.parasec.tsp.cost.GLSMoveCost;
 import net.parasec.tsp.distance.TourDistance;
 import net.parasec.tsp.algo.gls.BFPM;
 import net.parasec.tsp.algo.gls.GLS;
@@ -62,7 +61,7 @@ public class TSPSantaMain {
     PenaltyMatrix penaltyMatrix = new BFPM(points.length, penalty_file);
     double lambda = alpha * (score / points.length);
 
-    FLS fls = new FLS(new GLSMoveCost(penaltyMatrix, lambda));
+    FLS fls = new FLS(new SantaGLSMoveCost(penaltyMatrix, lambda));
     TSP gls = new GLS(tourDistance, fls, penaltyMatrix, maxRuns, output);
     double finalScore = gls.optimise(points, score);
 

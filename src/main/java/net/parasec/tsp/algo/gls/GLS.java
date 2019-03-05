@@ -85,7 +85,6 @@ public class GLS implements TSP {
 
     double bestScore = localSearch.optimise(points, score); // original cost (all penalties = 0)
 
-
     double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
 
@@ -99,7 +98,7 @@ public class GLS implements TSP {
       augScore = localSearch.optimise(points, augScore);
       score = tourDistance.distance(points);
 
-      //System.out.println(score);
+      //System.out.printf("GLS round %d length = %.4f\n", i, score);
 
       if(score < bestScore) { // non-augmented score.
         bestPoints = Point.copy(points);
@@ -134,6 +133,8 @@ public class GLS implements TSP {
         maxUtilFeatures.add(to);
       }
     }
+
+    //System.out.println("penalised " + maxUtilFeatures.size());
 
     // increase penalty for features which maximise the utility.
     for(int i = 0, len = maxUtilFeatures.size(); i < len; i += 2) {
