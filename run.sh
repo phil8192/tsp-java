@@ -1,7 +1,8 @@
 #!/bin/bash
-# example: ./run.sh data/gr9882.tsp /tmp/out.points gls_fls
-
-./pre-process.sh $1 >/tmp/tsp.points
-
-java -Djava.library.path=target/lib -Xmx8192m -cp target/tsp.jar:. \
-	net.parasec.tsp.TSPMain /tmp/tsp.points $2 $3
+HEAP=8192m
+IN=data/rat783.points
+OUT=/tmp/rat.out
+ALGO=gls_fls
+MAX_RUNS=1000000
+ALPHA=0.025
+java -Djava.library.path=target/lib -Xmx${HEAP} -cp target/tsp.jar:. net.parasec.tsp.TSPMain ${IN} ${OUT} ${ALGO} ${MAX_RUNS} ${ALPHA}

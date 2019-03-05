@@ -4,7 +4,7 @@ import net.parasec.tsp.algo.fls.FLS;
 import net.parasec.tsp.io.PointsReader;
 import net.parasec.tsp.algo.TSP;
 import net.parasec.tsp.distance.TourDistance;
-import net.parasec.tsp.algo.gls.BFPM;
+import net.parasec.tsp.algo.gls.MassiveMatrix;
 import net.parasec.tsp.algo.gls.GLS;
 import net.parasec.tsp.algo.gls.PenaltyMatrix;
 
@@ -58,7 +58,7 @@ public class TSPSantaMain {
     double score = tourDistance.distance(points);
     System.out.printf("Initial tour length = %.2f\n", score);
 
-    PenaltyMatrix penaltyMatrix = new BFPM(points.length, penalty_file);
+    PenaltyMatrix penaltyMatrix = new MassiveMatrix(points.length, penalty_file);
     double lambda = alpha * (score / points.length);
 
     FLS fls = new FLS(new SantaGLSMoveCost(penaltyMatrix, lambda));

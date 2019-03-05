@@ -44,17 +44,20 @@ public class TSPMain {
 
     if(algo.equals("gls_fls")) {
       // args: max_runs, alpha, matrix_location
-      if(args.length < 4) {
-        System.err.println("gls_fls requires a <max_runs> parameter.");
+      if(args.length < 5) {
+        System.err.println("gls_fls requires a <max_runs> and <alpha> parameter.");
         System.exit(0);
       }
       int maxRuns = Integer.parseInt(args[3]);
+      double alpha = Double.parseDouble(args[4]);
+
       PenaltyMatrix penaltyMatrix = new ArrayPenaltyMatrix(points.length);
-      double alpha = 0.05;
+
       double lambda = alpha * (newScore / points.length);
       fls = new FLS(new GLSMoveCost(penaltyMatrix, lambda));
       TSP gls = new GLS(tourDistance, fls, penaltyMatrix, maxRuns, output);
       double glsScore = gls.optimise(points, newScore);
+
       System.out.printf("GLS original tour length = %.2f new tour length = %.2f\n", newScore, glsScore);
     }
   }

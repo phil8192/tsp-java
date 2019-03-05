@@ -14,8 +14,10 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 /*
+ * https://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
+ *
  * reads in simple point file. rows = points, cols = x y.
- * tsplib format can be pre-processed into this format with:
+ * TSPLIB format can be pre-processed into this format with:
  *
  * cat tsplibformat.file |grep "^[0-9]" |awk '{print $2 " " $3}'
  */

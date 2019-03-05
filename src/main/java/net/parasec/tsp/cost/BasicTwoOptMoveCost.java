@@ -11,7 +11,7 @@ public class BasicTwoOptMoveCost implements TwoOptMoveCost<Point> {
    * returns the delta of a 2-Opt move. a negative delta indicates that
    * performing this 2-Opt will result in a shorter tour, and a positive delta
    * indicates that this 2-Opt will result in a longer tour.
-   *
+   * <p>
    * good optimisation: most of the time the algorithm is evaluating bad moves,
    * in the obvious case where 2 edge exchanges would result in 2 longer
    * edges, avoid 4 square root operations by comparing squares. this results

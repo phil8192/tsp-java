@@ -28,9 +28,4 @@ public class ArrayPenaltyMatrix implements PenaltyMatrix {
     return penalty;
   }
 
-  public void clear() {
-    for(int i = 0; i < penalties.length; i++) {
-      penalties[i] = 0;
-    }
-  }
 }
