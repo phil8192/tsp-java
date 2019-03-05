@@ -21,18 +21,19 @@ public class TSPSantaMain {
     String penalty_file = args[2];
     int maxRuns = Integer.parseInt(args[3]);
     boolean active = Boolean.parseBoolean(args[4]);
+    double alpha = Double.parseDouble(args[5]);
 
     PointsReader.PointParser<SantaPoint> pointParser = new PointsReader.PointParser<SantaPoint>() {
 
-      private boolean _isPrime(int n) {
-        if(n == 0 || n == 1 || n % 2 == 0) {
+      private boolean _isPrime(int cityId) {
+        if(cityId == 0 || cityId == 1 || cityId % 2 == 0) {
           return false;
         }
-        if(n == 2) {
+        if(cityId == 2) {
           return true;
         }
-        for(int i = 3, lim = ((int) Math.round(Math.sqrt(n))) + 1; i < lim; i += 2) {
-          if(n % i == 0) {
+        for(int i = 3, lim = ((int) Math.round(Math.sqrt(cityId))) + 1; i < lim; i += 2) {
+          if(cityId % i == 0) {
             return false;
           }
         }
@@ -59,11 +60,12 @@ public class TSPSantaMain {
     System.out.printf("Initial tour length = %.2f\n", score);
 
     PenaltyMatrix penaltyMatrix = new BFPM(points.length, penalty_file);
-    double alpha = 0.05;
     double lambda = alpha * (score / points.length);
+
     FLS fls = new FLS(new GLSMoveCost(penaltyMatrix, lambda));
     TSP gls = new GLS(tourDistance, fls, penaltyMatrix, maxRuns, output);
     double finalScore = gls.optimise(points, score);
+
     System.out.printf("GLS final tour length = %.2f\n", finalScore);
   }
 }
