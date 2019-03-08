@@ -29,10 +29,16 @@ public class GLS implements TSP {
 
     double bestScore = localSearch.optimise(points, score); // original cost (all penalties = 0)
 
+    if(bestScore < score) {
+      System.out.printf("FLS length = %.4f\n", bestScore);
+      DumpPoints.dump(points, output);
+      System.exit(0);
+    }
+
     double augScore = bestScore;
     Point[] bestPoints = Point.copy(points);
 
-    for(int i = 0; i < maxRuns; i++) {
+    for(int i = 1; i <= maxRuns; i++) {
       penalise(points, penalties);
       augScore = localSearch.optimise(points, augScore);
       score = tourDistance.distance(points);
