@@ -161,6 +161,7 @@ public class FLS implements TSP {
           current = wrap(current - 1, numCities);
           visited = 0;
           score += modified;
+          //System.out.printf("FLS tour length = %.2f\n", score);
           continue;
         }
         currentPoint.setActive(false);

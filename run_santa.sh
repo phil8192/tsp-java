@@ -1,6 +1,5 @@
 #!/bin/bash
 HEAP=8192m
-#IN=data/santa.points
 IN=data/santa_lkh.points
 #IN=data/santa_minima_1.points
 OUT=/tmp/santa.out

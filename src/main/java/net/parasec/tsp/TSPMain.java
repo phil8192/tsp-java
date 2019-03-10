@@ -2,21 +2,21 @@ package net.parasec.tsp;
 
 import net.parasec.tsp.algo.Point;
 import net.parasec.tsp.algo.TSP;
+import net.parasec.tsp.algo.gls.*;
 import net.parasec.tsp.cost.BasicTwoOptMoveCost;
 import net.parasec.tsp.cost.GLSMoveCost;
 import net.parasec.tsp.distance.DefaultDistance;
 import net.parasec.tsp.distance.TourDistance;
-import net.parasec.tsp.algo.gls.ArrayPenaltyMatrix;
-import net.parasec.tsp.algo.gls.GLS;
-import net.parasec.tsp.algo.gls.PenaltyMatrix;
 import net.parasec.tsp.algo.fls.FLS;
 import net.parasec.tsp.io.DumpPoints;
 import net.parasec.tsp.io.PointsReader;
 
+import java.io.IOException;
+
 
 public class TSPMain {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
 
     String input = args[0];
     String output = args[1];
@@ -44,14 +44,24 @@ public class TSPMain {
 
     if(algo.equals("gls_fls")) {
       // args: max_runs, alpha, matrix_location
-      if(args.length < 5) {
-        System.err.println("gls_fls requires a <max_runs> and <alpha> parameter.");
+      if(args.length < 6) {
+        System.err.println("gls_fls requires <max_runs> <alpha> <penalty_matrix_type> parameters.");
         System.exit(0);
       }
+
       int maxRuns = Integer.parseInt(args[3]);
       double alpha = Double.parseDouble(args[4]);
 
-      PenaltyMatrix penaltyMatrix = new ArrayPenaltyMatrix(points.length);
+      String penaltyMatrixType = args[5];
+      PenaltyMatrix penaltyMatrix;
+      if(penaltyMatrixType.equals("array")) {
+        penaltyMatrix = new ArrayPenaltyMatrix(points.length);
+      } else if(penaltyMatrixType.equals("disk")) {
+        String penaltyMatrixFile = args[6];
+        penaltyMatrix = new MassiveMatrix(points.length, penaltyMatrixFile);
+      } else {
+        penaltyMatrix = new NullPenaltyMatrix();
+      }
 
       double lambda = alpha * (newScore / points.length);
       fls = new FLS(new GLSMoveCost(penaltyMatrix, lambda));
