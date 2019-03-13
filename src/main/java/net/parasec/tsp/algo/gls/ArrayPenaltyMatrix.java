@@ -6,6 +6,8 @@ public class ArrayPenaltyMatrix implements PenaltyMatrix {
   private final int numCities;
 
   public ArrayPenaltyMatrix(int numCities) {
+    if(numCities > Math.pow(2, 16))
+      throw new IllegalArgumentException("try MassiveMatrix instead.");
     this.penalties = new int[numCities * (numCities - 1) / 2];
     this.numCities = numCities;
   }
