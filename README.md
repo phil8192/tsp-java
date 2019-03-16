@@ -2,6 +2,8 @@
 
 > WIP.
 
+[blog post](http://parasec.net/blog/kaggle-traveling-santa-2018-prime-paths/)
+
 Guided Local Search (GLS) with 2-Opt Fast Local Search (FLS).
 
 Implements Bentley's don't look bits + triangle of inequality.
